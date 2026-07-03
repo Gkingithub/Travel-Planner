@@ -86,7 +86,7 @@ function BudgetPlanner() {
 
           <div className="budget-item">
             <span>Transportation</span>
-            <strong>Rs. {transportCost}</strong>
+            <strong>Rs. {transportCost}</strong><br></br>
           </div>
 
           <div className="budget-item">

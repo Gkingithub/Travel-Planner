@@ -14,9 +14,9 @@ function Home() {
           <h2>AI Travel Planner</h2>
         </div>
 
-        <div className="nav-links">
+         <div className="nav-links">
           <Link to="/dashboard">Dashboard</Link>
-          <a href="#destinations">Destinations</a>
+          <a href="#destinations">Destinations</a> 
 
           <Link to="/login">
             <button className="login-btn">

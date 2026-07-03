@@ -9,7 +9,7 @@ import Destinations from "./Destinations";
 import Hotels from "./Hotels";
 import BudgetPlanner from "./BudgetPlanner";
 import Profile from "./Profile";
-
+import { Link } from "react-router-dom";
 import "./Dashboard.css";
 
 function Dashboard() {

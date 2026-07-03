@@ -9,19 +9,21 @@ function Profile({ user }) {
 
       <div className="profile-card">
 
-        <img
+       {/* <img
           src="/profile.png"
           alt="Profile"
           className="profile-image"
         />
+        */}
+      
 
         <div className="profile-info">
 
-          <h2>{user.name}</h2>
+          <h2>{user.name}</h2><br></br>
 
           <p>
             <strong>Email:</strong> {user.email}
-          </p>
+          </p><br></br>
 
           <p>
             <strong>Member Since:</strong> 2026

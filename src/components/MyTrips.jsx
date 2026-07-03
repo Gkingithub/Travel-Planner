@@ -6,10 +6,10 @@ function MyTrips() {
   const trips = [
     {
       id: 1,
-      destination: "Pokhara",
+      destination: "Kathmandu",
       date: "12 July 2026",
-      budget: "Rs. 15,000",
-      image: "/pokhara.jpg",
+      budget: "Rs. 5,000",
+      image: "/boudha.jpg",
     },
     {
       id: 2,
@@ -20,11 +20,19 @@ function MyTrips() {
     },
     {
       id: 3,
-      destination: "Mustang",
+      destination: "Lalitpur",
       date: "10 October 2026",
       budget: "Rs. 30,000",
       image: "/mustang.jpg",
     },
+
+    {
+      id: 4,
+      destination: "Dhapdam",
+      date: "1 December 2026",
+      buget: "Rs. 1000",
+      image: "/dhapdam.jpg",
+    }
   ];
 
   return (

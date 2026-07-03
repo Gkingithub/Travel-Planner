@@ -9,7 +9,7 @@ body {
     background: #f4f7fb;
 }
 
-/* ================= MAIN LAYOUT ================= */
+/*  MAIN LAYOUT  */
 
 .dashboard-container {
     display: flex;
@@ -19,7 +19,7 @@ body {
     background: #f4f7fb;
 }
 
-/* ================= SIDEBAR ================= */
+/*  SIDEBAR  */
 
 .sidebar {
     width: 260px;
@@ -68,7 +68,7 @@ body {
     margin-top: 40px;
 }
 
-/* ================= CONTENT AREA ================= */
+/* == CONTENT AREA == */
 
 .dashboard-content {
     flex: 1;
@@ -80,7 +80,7 @@ body {
     width: 100%;
 }
 
-/* ================= TOP BAR ================= */
+/* TOP BAR  */
 
 .topbar {
     display: flex;
@@ -98,7 +98,7 @@ body {
     margin-top: 5px;
 }
 
-/* ================= STATS ================= */
+/*  STATS  */
 
 .stats {
     display: grid;
@@ -124,7 +124,7 @@ body {
     font-size: 35px;
 }
 
-/* ================= PLANNER ================= */
+/* PLANNER */
 
 .planner {
     background: white;
@@ -177,7 +177,7 @@ body {
     background: #1749b7;
 }
 
-/* ================= DASHBOARD HOME ================= */
+/*  DASHBOARD HOME  */
 
 .dashboard-home {
     padding: 20px;
@@ -215,7 +215,7 @@ body {
     cursor: pointer;
 }
 
-/* ================= STATS GRID ================= */
+/* STATS GRID  */
 
 .stats-grid {
     display: grid;
@@ -241,7 +241,7 @@ body {
     margin-top: 10px;
 }
 
-/* ================= MAIN DASHBOARD LAYOUT ================= */
+/*  MAIN DASHBOARD LAYOUT  */
 
 .dashboard-main {
     display: grid;
@@ -249,7 +249,7 @@ body {
     gap: 25px;
 }
 
-/* ================= PLANNER CARD ================= */
+/*  PLANNER CARD  */
 
 .planner-card {
     background: white;
@@ -271,7 +271,7 @@ body {
     border: 1px solid #ddd;
 }
 
-/* ================= RIGHT PANEL ================= */
+/*  RIGHT PANEL  */
 
 .right-panel {
     display: flex;
@@ -314,7 +314,7 @@ body {
     border: none;
 }
 
-/* ================= ITINERARY ================= */
+/*  ITINERARY  */
 
 .itinerary-card {
     margin-top: 30px;
@@ -329,7 +329,7 @@ body {
     line-height: 1.7;
 }
 
-/* ================= RESPONSIVE ================= */
+/* RESPONSIVE  */
 
 @media (max-width: 1100px) {
 
@@ -386,14 +386,14 @@ body {
   border-radius: 10px;
 }
 
-
+/*budget page*/
 .page {
   padding: 30px;
   font-family: Arial, sans-serif;
   background: #eef2f7;
 }
 
-/* Title */
+/*  budget Title */
 .page h1 {
   margin-bottom: 20px;
   font-size: 26px;
@@ -405,6 +405,10 @@ body {
   display: flex;
   gap: 25px;
   flex-wrap: wrap;
+}
+
+.budget-item span {
+  margin-right: 50px;
 }
 
 /* LEFT FORM CARD */
