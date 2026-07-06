@@ -46,7 +46,7 @@ function DashboardHome({ user }) {
     }
 
     const itinerary = `
-AI TRAVEL ITINERARY
+TRAVEL ITINERARY
 
 Destination : ${trip.destination}
 
@@ -102,7 +102,7 @@ DAY 3
 
 --------------------------------------------
 
-Thank you for using AI Travel Planner.
+Thank you for using Yatriq.
 Have a safe and enjoyable journey.
 `;
 
@@ -128,28 +128,16 @@ Have a safe and enjoyable journey.
         <div>
 
           <h1>
-            Welcome, {user.name} 👋
+            Welcome, {user.name} 
           </h1>
 
           <p>
-            Plan your next adventure with AI Travel Planner.
+            Plan your next adventure with Yatriq.
           </p>
 
         </div>
 
-        <div className="header-actions">
-
-          <input
-            type="text"
-            placeholder="Search..."
-            className="search-box"
-          />
-
-          <button className="notification-btn">
-            🔔
-          </button>
-
-        </div>
+        
 
       </div>
 
@@ -257,7 +245,6 @@ Have a safe and enjoyable journey.
               <option value="">Transportation</option>
               <option>Flight</option>
               <option>Bus</option>
-              <option>Train</option>
               <option>Private Vehicle</option>
             </select>
 
@@ -288,149 +275,117 @@ Have a safe and enjoyable journey.
             className="generate-btn"
             onClick={generatePlan}
           >
-            Generate AI Plan
+            Generate  Plan
           </button>
 
         </div>
 
         {/* RIGHT PANEL STARTS HERE */}
-                <div className="right-panel">
 
-          {/* Popular Destinations */}
+<div className="right-panel">
 
-          <div className="side-card">
+  {/* Popular Destinations */}
 
-            <h2>Popular Destinations</h2>
+  <div className="side-card">
 
-            <div className="mini-card">
+    <h2>Popular Destinations</h2>
 
-              <img
-                src="/pokhara.jpg"
-                alt="Pokhara"
-              />
+    <div className="mini-card">
 
-              <div>
+      <img
+        src="/pokhara.jpg"
+        alt="Pokhara"
+      />
 
-                <h4>Pokhara</h4>
+      <div>
 
-                <p>Lakes & Mountains</p>
+        <h4>Pokhara</h4>
 
-                <span>★★★★★</span>
+        <p>Lakes & Mountains</p>
 
-              </div>
-
-            </div>
-
-            <div className="mini-card">
-
-              <img
-                src="/chitwan.jpg"
-                alt="Chitwan"
-              />
-
-              <div>
-
-                <h4>Chitwan</h4>
-
-                <p>Jungle Safari</p>
-
-                <span>★★★★☆</span>
-
-              </div>
-
-            </div>
-
-            <div className="mini-card">
-
-              <img
-                src="/mustang.jpg"
-                alt="Mustang"
-              />
-
-              <div>
-
-                <h4>Mustang</h4>
-
-                <p>Himalayan Adventure</p>
-
-                <span>★★★★★</span>
-
-              </div>
-
-            </div>
-
-            <div className="mini-card">
-
-              <img
-                src="/lumbini.jpg"
-                alt="Lumbini"
-              />
-
-              <div>
-
-                <h4>Lumbini</h4>
-
-                <p>Birthplace of Buddha</p>
-
-                <span>★★★★☆</span>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* Upcoming Trips */}
-
-          <div className="side-card">
-
-            <h2>Upcoming Trips</h2>
-
-            <div className="trip-item">
-
-              <h4>Pokhara</h4>
-
-              <p>12 July 2026</p>
-
-            </div>
-
-            <div className="trip-item">
-
-              <h4>Chitwan</h4>
-
-              <p>25 August 2026</p>
-
-            </div>
-
-            <div className="trip-item">
-
-              <h4>Mustang</h4>
-
-              <p>10 October 2026</p>
-
-            </div>
-
-          </div>
-
-        </div>
+        <span>★★★★★</span>
 
       </div>
 
-      {/* Generated AI Plan */}
+    </div>
 
-      {plan && (
+    <div className="mini-card">
 
-        <div className="itinerary-card">
+      <img
+        src="/chitwan.jpg"
+        alt="Chitwan"
+      />
 
-          <h2>Generated Itinerary</h2>
+      <div>
 
-          <pre>{plan}</pre>
+        <h4>Chitwan</h4>
 
-        </div>
+        <p>Jungle Safari</p>
 
-      )}
+        <span>★★★★☆</span>
+
+      </div>
 
     </div>
+
+    <div className="mini-card">
+
+      <img
+        src="/mustang.jpg"
+        alt="Mustang"
+      />
+
+      <div>
+
+        <h4>Mustang</h4>
+
+        <p>Himalayan Adventure</p>
+
+        <span>★★★★★</span>
+
+      </div>
+
+    </div>
+
+    <div className="mini-card">
+
+      <img
+        src="/lumbini.jpg"
+        alt="Lumbini"
+      />
+
+      <div>
+
+        <h4>Lumbini</h4>
+
+        <p>Birthplace of Buddha</p>
+
+        <span>★★★★☆</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+{/* Generated Plan */}
+
+{plan && (
+
+  <div className="itinerary-card">
+
+    <h2>Generated Itinerary</h2>
+
+    <pre>{plan}</pre>
+
+  </div>
+
+)}
+
+</div>
 
   );
 

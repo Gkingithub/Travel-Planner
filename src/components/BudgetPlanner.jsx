@@ -21,14 +21,17 @@ function BudgetPlanner() {
   return (
     <div className="page">
 
-      <h1>Budget Planner</h1>
+      <h1 className="page-title">Budget Planner</h1>
 
       <div className="budget-container">
 
+        {/* LEFT CARD */}
+
         <div className="budget-form">
 
-          <label>Number of Days</label>
+          <h2>Trip Details</h2>
 
+          <label> Number of Days</label>
           <input
             type="number"
             value={days}
@@ -36,8 +39,7 @@ function BudgetPlanner() {
             onChange={(e) => setDays(Number(e.target.value))}
           />
 
-          <label>Travelers</label>
-
+          <label> Travelers</label>
           <input
             type="number"
             value={travelers}
@@ -45,8 +47,7 @@ function BudgetPlanner() {
             onChange={(e) => setTravelers(Number(e.target.value))}
           />
 
-          <label>Hotel Category</label>
-
+          <label> Hotel Category</label>
           <select
             value={hotel}
             onChange={(e) => setHotel(Number(e.target.value))}
@@ -57,25 +58,26 @@ function BudgetPlanner() {
             <option value="7000">5 Star Hotel</option>
           </select>
 
-          <label>Transportation</label>
-
+          <label> Transportation</label>
           <select
             value={transport}
             onChange={(e) => setTransport(Number(e.target.value))}
           >
             <option value="500">Bus</option>
             <option value="1500">Flight</option>
-           <option value="1000">Private Vehicle</option>
+            <option value="1000">Private Vehicle</option>
           </select>
 
         </div>
+
+        {/* RIGHT CARD */}
 
         <div className="budget-result">
 
           <h2>Estimated Budget</h2>
 
           <div className="budget-item">
-            <span>Hotel</span>
+            <span> Hotel</span>
             <strong>Rs. {hotelCost}</strong>
           </div>
 
@@ -86,7 +88,7 @@ function BudgetPlanner() {
 
           <div className="budget-item">
             <span>Transportation</span>
-            <strong>Rs. {transportCost}</strong><br></br>
+            <strong>Rs. {transportCost}</strong>
           </div>
 
           <div className="budget-item">
@@ -94,11 +96,12 @@ function BudgetPlanner() {
             <strong>Rs. {activities}</strong>
           </div>
 
-          <hr />
-
           <div className="budget-total">
-            <span>Total Budget</span>
-            <h2>Rs. {total}</h2>
+
+            <p>Total Estimated Budget</p>
+
+            <h1>Rs. {total}</h1>
+
           </div>
 
         </div>

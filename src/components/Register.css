@@ -13,7 +13,7 @@
 
   background:
     linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url("/lake.jpg");
+    url("/background.jpg");
 
   background-size: cover;
   background-position: center;
@@ -52,7 +52,7 @@ input {
 button {
   width: 100%;
   padding: 12px;
-  background: #5d53e0;
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 8px;

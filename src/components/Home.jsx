@@ -11,7 +11,8 @@ function Home() {
       <nav className="navbar">
 
         <div className="logo">
-          <h2>AI Travel Planner</h2>
+          <h2>YATRIQ</h2>
+              <h3 className="light-text"> Travel Planner</h3>
         </div>
 
          <div className="nav-links">
@@ -103,7 +104,7 @@ function Home() {
           />
 
           <button>
-            Generate AI Plan
+            Generate Itinerary
           </button>
 
         </div>

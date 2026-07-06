@@ -62,8 +62,8 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>AI Travel Planner</h2>
-        <p>Plan your perfect journey with AI</p>
+        <h2>Yatriq</h2>
+        <p>Plan your perfect journey</p>
 
         <form onSubmit={handleSubmit}>
           {/* Email */}

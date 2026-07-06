@@ -65,7 +65,7 @@ Swal.fire({
     <div className="register-container">
       <div className="register-card">
         <h2>Create Account</h2>
-        <p>Join AI Travel Planner</p>
+        <p>Join Yatriq</p>
 
         <form onSubmit={handleSubmit}>
           <input

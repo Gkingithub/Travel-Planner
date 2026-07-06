@@ -6,9 +6,9 @@ function Hotels() {
   const hotels = [
     {
       id: 1,
-      name: "Hotel Barahi",
-      location: "Pokhara",
-      price: "Rs. 4,500 / night",
+      name: "Hotel Dwarika",
+      location: "Kathmandu",
+      price: "Rs. 5,500 / night",
       rating: "★★★★★",
       image: "/hotel1.jpg",
     },
@@ -16,7 +16,7 @@ function Hotels() {
       id: 2,
       name: "Green Park Resort",
       location: "Chitwan",
-      price: "Rs. 5,000 / night",
+      price: "Rs. 3,000 / night",
       rating: "★★★★☆",
       image: "/hotel2.jpg",
     },
@@ -30,11 +30,11 @@ function Hotels() {
     },
     {
       id: 4,
-      name: "Buddha Maya Garden",
-      location: "Lumbini",
-      price: "Rs. 3,800 / night",
+      name: "Fulbari hotel",
+      location: "Pokhara",
+      price: "Rs. 8000 / night",
       rating: "★★★★☆",
-      image: "/hotel4.jpg",
+      image: "/fulbari.jpg",
     },
   ];
 
@@ -55,34 +55,33 @@ function Hotels() {
             />
 
             <div className="hotel-info">
+              
 
               <h2>{hotel.name}</h2>
 
-              <p>{hotel.location}</p>
+              <p> {hotel.location}</p>
 
-              <span className="rating">
-                {hotel.rating}
-              </span>
+            <span className="rating">
+            {hotel.rating}
+            </span>
 
-              <h3>{hotel.price}</h3>
+             <h3>{hotel.price}</h3>
 
-              <div className="features">
+    <div className="features">
+        <span>Free WiFi</span>
+        <span> Breakfast</span>
+        <span> Parking</span>
+    </div>
 
-                <span>Free WiFi</span>
+   
 
-                <span>Breakfast</span>
+</div>
 
-                <span>Parking</span>
-
-              </div>
-
-              <button>
-                Book Now
-              </button>
+              
 
             </div>
 
-          </div>
+         
 
         ))}
 

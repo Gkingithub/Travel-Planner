@@ -42,7 +42,7 @@ function Destinations() {
     {
       id: 6,
       name: "Ilam",
-      image: "/Ilam.jpg",
+      image: "/ilam.jpg",
       description: "Beautiful tea gardens.",
       budget: "Rs. 14,000",
     },
@@ -51,7 +51,7 @@ function Destinations() {
       id:7,
       name: "Kathmandu",
       image: "boudha.jpg",
-      descriptionn: "Peace and spiritual.",
+      description: "Peace and spiritual.",
       budget: "Rs. 3000",
       
     },
@@ -61,6 +61,7 @@ function Destinations() {
       name: "Lalitpur",
       image: "patan.webp",
       description: "Art and Cultural heritage.",
+      budget: "Rs. 1500",
     }
 
   ];

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Admin.css";
+import AdminSidebar from "./AdminSidebar";
+import Modal from "./Modal";
 
 function ManageUsers() {
 
-  const users = [
+  const [users, setUsers] = useState([
     {
       id: 1,
       name: "Ram Sharma",
@@ -22,47 +24,141 @@ function ManageUsers() {
       email: "hari@gmail.com",
       role: "User",
     },
-  ];
+  ]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+
+  const handleSave = () => {
+    const updatedUsers = users.map((user) =>
+      user.id === editingUser.id ? editingUser : user
+    );
+
+    setUsers(updatedUsers);
+    setShowModal(false);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setUsers(users.filter((user) => user.id !== id));
+    }
+  };
 
   return (
-    <div className="admin-page">
+    <div className="admin-layout">
 
-      <h1>Manage Users</h1>
+      <AdminSidebar />
 
-      <table className="admin-table">
+      <div className="admin-content">
 
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Action</th>
-          </tr>
-        </thead>
+        <h1>Manage Users</h1>
 
-        <tbody>
+        <table className="admin-table">
 
-          {users.map((user) => (
-
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-
-              <td>
-                <button className="edit-btn">Edit</button>
-                <button className="delete-btn">Delete</button>
-              </td>
-
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Action</th>
             </tr>
+          </thead>
 
-          ))}
+          <tbody>
 
-        </tbody>
+            {users.map((user) => (
 
-      </table>
+              <tr key={user.id}>
+
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+
+                <td>
+
+                  <button
+                    className="edit-btn"
+                    onClick={() => {
+                      setEditingUser(user);
+                      setShowModal(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(user.id)}
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+        {showModal && editingUser && (
+
+          <Modal
+            title="Edit User"
+            onClose={() => setShowModal(false)}
+            onSave={handleSave}
+          >
+
+            <label>Name</label>
+
+            <input
+              type="text"
+              value={editingUser.name}
+              onChange={(e) =>
+                setEditingUser({
+                  ...editingUser,
+                  name: e.target.value,
+                })
+              }
+            />
+
+            <label>Email</label>
+
+            <input
+              type="email"
+              value={editingUser.email}
+              onChange={(e) =>
+                setEditingUser({
+                  ...editingUser,
+                  email: e.target.value,
+                })
+              }
+            />
+
+            <label>Role</label>
+
+            <select
+              value={editingUser.role}
+              onChange={(e) =>
+                setEditingUser({
+                  ...editingUser,
+                  role: e.target.value,
+                })
+              }
+            >
+              <option>User</option>
+              <option>Admin</option>
+            </select>
+
+          </Modal>
+
+        )}
+
+      </div>
 
     </div>
   );

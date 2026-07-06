@@ -20,19 +20,29 @@ function AdminSidebar() {
 
         <li>
           <Link to="/admin/trips">Manage Trips</Link>
+
         </li>
 
         <li>
-          <Link to="/admin/bookings">Manage Bookings</Link>
+          <Link to="/admin/activities">Manage Activities</Link>
         </li>
-
+        
+        <li>
+          <Link to="/admin/hotels">Manage Hotels</Link>
+        </li>
+        
         <li>
           <Link to="/admin/feedback">Feedback</Link>
         </li>
 
+        
+
         <li>
           <Link to="/admin/login">Logout</Link>
         </li>
+        
+        
+        
 
       </ul>
 

@@ -5,6 +5,8 @@ import Dashboard from "./components/Dashboard";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import ManageUsers from "./components/Admin/ManageUsers";
 import ManageTrips from "./components/Admin/ManageTrips";
+import ManageHotels from "./components/Admin/ManageHotels";
+import ManageActivities from "./components/Admin/ManageActivities";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminLogin from "./components/Admin/AdminLogin";
@@ -22,12 +24,16 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
         <Route path="/admin/login" element={<AdminLogin/>}/>
       
       <Route path="/admin/users" element={<ManageUsers />} />
       
       <Route path="/admin/trips" element={<ManageTrips />} />
-      
+
+      <Route path="/admin/hotels" element={<ManageHotels />} />
+
+      <Route path="/admin/activities"element={<ManageActivities />}/>
       
       </Routes>
     </BrowserRouter>

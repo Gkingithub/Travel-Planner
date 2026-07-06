@@ -14,7 +14,7 @@ function Sidebar({ active, setActive, logout }) {
     <div className="sidebar">
 
       <div className="logo">
-        <h2>AI Travel Planner</h2>
+        <h2>YATRIQ</h2>
       </div>
 
       <ul>
