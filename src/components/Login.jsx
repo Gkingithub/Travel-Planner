@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
+import{login} from "../service/authSerive";
 function Login() {
   const navigate = useNavigate();
 
@@ -11,52 +12,41 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!email || !password) {
-    Swal.fire({
-      icon: "error",
-      title: "Missing Fields",
-      text: "Please fill all fields",
-    });
-    return;
-  }
+    console.log("Login button clicked");
 
-  const savedUser = JSON.parse(localStorage.getItem("registeredUser"));
+    if (!email || !password) {
+        Swal.fire({
+            icon: "error",
+            title: "Missing Fields",
+            text: "Please fill all fields",
+        });
+        return;
+    }
 
-  if (!savedUser) {
-    Swal.fire({
-      icon: "error",
-      title: "No Account Found",
-      text: "Please register first.",
-    });
-    return;
-  }
+    console.log("Calling login API...");
 
-  if (
-    savedUser.email !== email ||
-    savedUser.password !== password
-  ) {
-    Swal.fire({
-      icon: "error",
-      title: "Invalid Credentials",
-      text: "Incorrect email or password.",
-    });
-    return;
-  }
+    try {
+        const result = await login(email, password);
+        console.log(result);
 
-  localStorage.setItem("loggedInUser", JSON.stringify(savedUser));
+        Swal.fire({
+            icon: "success",
+            title: "Login Successful"
+        });
 
-  await Swal.fire({
-    icon: "success",
-    title: "Login Successful",
-    text: `Welcome ${savedUser.name}!`,
-    timer: 1500,
-    showConfirmButton: false,
-  });
+        navigate("/dashboard");
+    } catch (error) {
+        console.error(error);
 
-  navigate("/dashboard");
+        Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: "Invalid email or password."
+        });
+    }
 };
 
   return (
@@ -113,5 +103,6 @@ function Login() {
     </div>
   );
 }
+
 
 export default Login;
