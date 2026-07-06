@@ -100,7 +100,7 @@ function BudgetPlanner() {
 
             <p>Total Estimated Budget</p>
 
-            <h1>Rs. {total}</h1>
+            <h1>Rs. {hotelCost.toLocaleString()}</h1>
 
           </div>
 

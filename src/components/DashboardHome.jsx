@@ -132,7 +132,7 @@ Have a safe and enjoyable journey.
           </h1>
 
           <p>
-            Plan your next adventure with Yatriq.
+            Plan your next journey with Yatriq
           </p>
 
         </div>

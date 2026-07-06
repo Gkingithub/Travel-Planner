@@ -1,13 +1,13 @@
 :root {
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
-    --primary-light: #dbeafe;
+    --primary-light: #bcd8f3;
 
     --background: #fff;
     --surface: #fff;
 
-    --text: #1f2937;
-    --text-light: #6b7280;
+    --text: #1c2129;
+    --text-light: #38393a;
     --border: #e5e7eb;
 
     --radius: 12px;
@@ -20,11 +20,13 @@
     flex-direction:column;
     align-items:flex-start;
     line-height:1.1;
+   
 }
 .logo h2{
     margin:0;
     color:var(--primary);
     font-size:30px;
+    
 }
 .logo h3{
     margin:2px 0 0 2px;
@@ -54,7 +56,10 @@
 
 .logo h2{
     color:var(--primary);
-    font-size:30px;
+    font-size:50px;
+    margin-top: 50px;
+   
+    
 }
 
 .nav-links{
@@ -62,9 +67,7 @@
     align-items:center;
     gap:20px;
 }
-.light-text {
-  font-weight: 300; /* Light */
-}
+
 
 .nav-links a{
     text-decoration:none;
@@ -105,9 +108,21 @@
 
 .register-btn:hover{
     background:var(--primary-dark);
+    
 }
 
 
+.banner {
+    background:
+        linear-gradient(rgba(139, 192, 235, 0.35), rgba(117, 174, 238, 0.35)),
+        url("./blue.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+    text-align: center;
+    padding: 70px 20px;
+}
 
 .hero{
     width:90%;

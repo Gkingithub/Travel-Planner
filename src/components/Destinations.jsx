@@ -69,7 +69,7 @@ function Destinations() {
   return (
     <div className="page">
 
-      <h1>Popular Destinations</h1>
+      <h1>Popular Destinations</h1><br></br>
 
       <div className="destination-grid">
 

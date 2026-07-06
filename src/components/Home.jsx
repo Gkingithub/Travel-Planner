@@ -12,7 +12,7 @@ function Home() {
 
         <div className="logo">
           <h2>YATRIQ</h2>
-              <h3 className="light-text"> Travel Planner</h3>
+              
         </div>
 
          <div className="nav-links">
@@ -36,15 +36,16 @@ function Home() {
       </nav>
 
       {/* Hero Section */}
+      <div className="banner">
 
       <section className="hero" id="home">
 
         <div className="hero-content">
 
           <h1>
-            Plan With us.
+            Plan With us
             <br />
-            Travel Better.
+            Travel Better
           </h1>
 
           <p>
@@ -52,7 +53,7 @@ function Home() {
             Discover destinations, estimate your budget,
             and organize your journey.
           </p>
-
+          
           <div className="hero-buttons">
 
             <Link to="/register">
@@ -75,41 +76,8 @@ function Home() {
 
       {/* Trip Planner */}
 
-      <section className="planner-section">
-
-        <h2>Quick Trip Planner</h2>
-
-        <p>
-          Start planning your next adventure.
-        </p>
-
-        <div className="planner-box">
-
-          <input
-            type="text"
-            placeholder="Destination"
-          />
-
-          <input
-            type="date"
-          />
-
-          <input
-            type="date"
-          />
-
-          <input
-            type="number"
-            placeholder="Travelers"
-          />
-
-          <button>
-            Generate Itinerary
-          </button>
-
-        </div>
-
-      </section>
+      
+      </div>
 
       {/* Popular Destinations */}
 
@@ -205,12 +173,16 @@ function Home() {
       {/* Footer */}
 
       <footer className="footer">
+  <h3>YatriQ</h3><br></br>
 
-        <p>
-          © 2026 AI Travel Planner. All Rights Reserved.
-        </p>
+  <p>Smart travel planning.</p><br></br>
 
-      </footer>
+  <p>Email: support@yatriq.com</p><br></br>
+
+  <p>Phone: +977-9860000000</p><br></br>
+
+  <p>© 2026 YatriQ. All Rights Reserved.</p>
+</footer>
 
     </div>
   );

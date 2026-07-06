@@ -41,7 +41,7 @@ function Hotels() {
   return (
     <div className="page">
 
-      <h1>Recommended Hotels</h1>
+      <h1>Recommended Hotels</h1><br></br>
 
       <div className="hotel-grid">
 
