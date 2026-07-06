@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Register.css";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { register } from "../service/authSerive";
 function Register() {
   const navigate = useNavigate();
 
@@ -11,54 +11,33 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      await register(name, email, password);
+
+      Swal.fire({
+        icon: "success",
+        title: "Account Created"
+      });
+
+      navigate("/login");
+    } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Missing Fields",
-        text: "Please fill all fields",
+        title: "Registration Failed",
+        text: err.response?.data?.message
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    if (password !== confirmPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Password Error",
-        text: "Passwords do not match",
-      });
-      return;
-    }
-
-    // Save user in localStorage
-    const user = {
-  name,
-  email,
-  password,
-};
-
-localStorage.setItem("registeredUser", JSON.stringify(user));
-
-Swal.fire({
-  icon: "success",
-  title: "Account Created",
-  text: "You have successfully registered!",
-}).then(() => {
-  localStorage.setItem("loggedInUser", JSON.stringify(user));
-  navigate("/dashboard");
-});
-  
-    // Success alert and redirect
-    Swal.fire({
-      icon: "success",
-      title: "Account Created",
-      text: "You have successfully registered!",
-      confirmButtonText: "Continue",
-    }).then(() => {
-      navigate("/dashboard");
-    });
   };
 
   return (
@@ -96,7 +75,9 @@ Swal.fire({
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          <button type="submit">Register</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
 
           <p className="login-link">
             Already have an account?{" "}
