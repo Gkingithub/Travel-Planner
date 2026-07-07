@@ -14,7 +14,7 @@ function DashboardHome({ user }) {
     travelType: "",
     transport: "",
     hotel: "",
-    interests: "",
+    interests: [],
   });
 
   const [plan, setPlan] = useState("");
@@ -25,6 +25,24 @@ function DashboardHome({ user }) {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleInterestChange = (e) => {
+  const { value, checked } = e.target;
+
+  if (checked) {
+    setTrip({
+      ...trip,
+      interests: [...trip.interests, value],
+    });
+  } else {
+    setTrip({
+      ...trip,
+      interests: trip.interests.filter(
+        (interest) => interest !== value
+      ),
+    });
+  }
+};
 
   const generatePlan = () => {
 
@@ -44,6 +62,10 @@ function DashboardHome({ user }) {
 
       return;
     }
+   
+    
+  
+
 
     const itinerary = `
 TRAVEL ITINERARY
@@ -64,7 +86,7 @@ Transportation : ${trip.transport}
 
 Hotel Category : ${trip.hotel}
 
-Interests : ${trip.interests}
+Interests : ${trip.interests.join(", ")}
 
 --------------------------------------------
 
@@ -116,6 +138,8 @@ Have a safe and enjoyable journey.
     });
 
   };
+
+  
 
   return (
 
@@ -260,14 +284,79 @@ Have a safe and enjoyable journey.
               <option>5 Star Hotel</option>
             </select>
 
-            <input
-              type="text"
-              name="interests"
-              placeholder="Interests"
-              value={trip.interests}
-              onChange={handleChange}
-              className="full-width"
-            />
+           <div className="interest-section full-width">
+
+  <label className="interest-title">
+    Select Interests
+  </label>
+
+  <div className="interest-list">
+
+    <label>
+      <input
+        type="checkbox"
+        value="Adventure"
+        checked={trip.interests.includes("Adventure")}
+        onChange={handleInterestChange}
+      />
+      Adventure
+    </label>
+
+    <label>
+      <input
+        type="checkbox"
+        value="Nature"
+        checked={trip.interests.includes("Nature")}
+        onChange={handleInterestChange}
+      />
+      Nature
+    </label>
+
+    <label>
+      <input
+        type="checkbox"
+        value="Wildlife"
+        checked={trip.interests.includes("Wildlife")}
+        onChange={handleInterestChange}
+      />
+      Wildlife
+    </label>
+
+    <label>
+      <input
+        type="checkbox"
+        value="Religious"
+        checked={trip.interests.includes("Religious")}
+        onChange={handleInterestChange}
+      />
+      Religious
+    </label>
+
+    <label>
+      <input
+        type="checkbox"
+        value="Cultural"
+        checked={trip.interests.includes("Cultural")}
+        onChange={handleInterestChange}
+      />
+      Cultural
+    </label>
+
+    <label>
+      <input
+        type="checkbox"
+        value="Luxury"
+        checked={trip.interests.includes("Luxury")}
+        onChange={handleInterestChange}
+      />
+      Luxury
+    </label>
+
+    
+
+  </div>
+
+</div>
 
           </div>
 
@@ -279,6 +368,8 @@ Have a safe and enjoyable journey.
           </button>
 
         </div>
+
+        
 
         {/* RIGHT PANEL STARTS HERE */}
 

@@ -809,3 +809,36 @@ body {
 .edit-btn:hover{
     background:#1d4ed8;
 }
+
+.interest-section{
+    grid-column:1 / -1;
+    margin-top:10px;
+}
+
+.interest-title{
+    display:block;
+    font-weight:600;
+    margin-bottom:12px;
+    font-size:16px;
+}
+
+.interest-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px 25px;
+}
+
+.interest-list label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.interest-list input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    accent-color:#2563eb;
+}
+
