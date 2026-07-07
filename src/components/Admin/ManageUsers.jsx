@@ -51,7 +51,7 @@ function ManageUsers() {
 
       <div className="admin-content">
 
-        <h1>Manage Users</h1>
+        <h1>Manage Users</h1><br></br>
 
         <table className="admin-table">
 

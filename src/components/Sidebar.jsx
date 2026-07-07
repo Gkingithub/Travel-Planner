@@ -7,6 +7,7 @@ import {
   FaWallet,
   FaUser,
   FaSignOutAlt,
+  FaRobot,
 } from "react-icons/fa";
 
 function Sidebar({ active, setActive, logout }) {
@@ -59,6 +60,14 @@ function Sidebar({ active, setActive, logout }) {
           <span>Budget Planner</span>
         </li>
 
+        
+        <li
+          className={active === "recommendation" ? "active" : ""}
+          onClick={() => setActive("recommendation")}
+        >
+       <FaRobot />
+        <span>Recommendation</span>
+      </li>
         <li
           className={active === "profile" ? "active" : ""}
           onClick={() => setActive("profile")}
@@ -66,6 +75,7 @@ function Sidebar({ active, setActive, logout }) {
           <FaUser />
           <span>Profile</span>
         </li>
+
 
       </ul>
 

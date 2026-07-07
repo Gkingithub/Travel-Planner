@@ -4,7 +4,6 @@ import AdminSidebar from "./AdminSidebar";
 import Modal from "./Modal";
 
 function ManageTrips() {
-
   const [trips, setTrips] = useState([
     {
       id: 1,
@@ -29,15 +28,38 @@ function ManageTrips() {
   const [showModal, setShowModal] = useState(false);
   const [editingTrip, setEditingTrip] = useState(null);
 
-  const handleSave = () => {
-    const updatedTrips = trips.map((trip) =>
-      trip.id === editingTrip.id ? editingTrip : trip
-    );
-
-    setTrips(updatedTrips);
-    setShowModal(false);
+  // Open Add Destination Form
+  const handleAdd = () => {
+    setEditingTrip({
+      id: Date.now(), // Unique ID
+      destination: "",
+      days: "",
+      price: "",
+    });
+    setShowModal(true);
   };
 
+  // Save (Add or Edit)
+  const handleSave = () => {
+    const exists = trips.some((trip) => trip.id === editingTrip.id);
+
+    if (exists) {
+      // Edit
+      setTrips(
+        trips.map((trip) =>
+          trip.id === editingTrip.id ? editingTrip : trip
+        )
+      );
+    } else {
+      // Add
+      setTrips([...trips, editingTrip]);
+    }
+
+    setShowModal(false);
+    setEditingTrip(null);
+  };
+
+  // Delete
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this destination?")) {
       setTrips(trips.filter((trip) => trip.id !== id));
@@ -46,19 +68,16 @@ function ManageTrips() {
 
   return (
     <div className="admin-layout">
-
       <AdminSidebar />
 
       <div className="admin-content">
-
         <h1>Manage Destinations</h1>
 
-        <button className="add-btn">
+        <button className="add-btn" onClick={handleAdd}>
           + Add Destination
         </button>
 
         <table className="admin-table">
-
           <thead>
             <tr>
               <th>ID</th>
@@ -70,25 +89,18 @@ function ManageTrips() {
           </thead>
 
           <tbody>
-
             {trips.map((trip) => (
-
               <tr key={trip.id}>
-
                 <td>{trip.id}</td>
-
                 <td>{trip.destination}</td>
-
                 <td>{trip.days} Days</td>
-
                 <td>{trip.price}</td>
 
                 <td>
-
                   <button
                     className="edit-btn"
                     onClick={() => {
-                      setEditingTrip(trip);
+                      setEditingTrip({ ...trip });
                       setShowModal(true);
                     }}
                   >
@@ -101,27 +113,26 @@ function ManageTrips() {
                   >
                     Delete
                   </button>
-
                 </td>
-
               </tr>
-
             ))}
-
           </tbody>
-
         </table>
 
         {showModal && editingTrip && (
-
           <Modal
-            title="Edit Destination"
-            onClose={() => setShowModal(false)}
+            title={
+              trips.some((trip) => trip.id === editingTrip.id)
+                ? "Edit Destination"
+                : "Add Destination"
+            }
+            onClose={() => {
+              setShowModal(false);
+              setEditingTrip(null);
+            }}
             onSave={handleSave}
           >
-
             <label>Destination</label>
-
             <input
               type="text"
               value={editingTrip.destination}
@@ -134,7 +145,6 @@ function ManageTrips() {
             />
 
             <label>Duration (Days)</label>
-
             <input
               type="number"
               value={editingTrip.days}
@@ -147,7 +157,6 @@ function ManageTrips() {
             />
 
             <label>Price</label>
-
             <input
               type="text"
               value={editingTrip.price}
@@ -158,13 +167,9 @@ function ManageTrips() {
                 })
               }
             />
-
           </Modal>
-
         )}
-
       </div>
-
     </div>
   );
 }

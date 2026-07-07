@@ -53,8 +53,10 @@ function ManageHotels() {
       <AdminSidebar />
 
       <div className="admin-content">
-
-        
+          <h1> Manage Hotel</h1>
+         <button className="add-btn">
+          + Add Hotel
+        </button>
 
         <table className="admin-table">
 
@@ -173,9 +175,7 @@ function ManageHotels() {
                 })
               }
             />
-             <button className="add-btn">
-          + Add Hotel
-        </button>
+            
 
           </Modal>
           

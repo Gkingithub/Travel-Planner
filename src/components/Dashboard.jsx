@@ -9,8 +9,11 @@ import Destinations from "./Destinations";
 import Hotels from "./Hotels";
 import BudgetPlanner from "./BudgetPlanner";
 import Profile from "./Profile";
+import Recommendation from "./Recommendation";
+
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -72,6 +75,13 @@ function Dashboard() {
         {active === "profile" && (
           <Profile user={user} />
         )}
+
+         {active === "recommendation" && (
+          <Recommendation />
+        )}
+
+
+        
 
       </div>
 

@@ -4,7 +4,6 @@ import AdminSidebar from "./AdminSidebar";
 import Modal from "./Modal";
 
 function ManageActivities() {
-
   const [activities, setActivities] = useState([
     {
       id: 1,
@@ -38,15 +37,42 @@ function ManageActivities() {
   const [showModal, setShowModal] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
 
-  const handleSave = () => {
-    const updatedActivities = activities.map((item) =>
-      item.id === editingActivity.id ? editingActivity : item
-    );
+  // Open Add Activity Form
+  const handleAdd = () => {
+    setEditingActivity({
+      id: Date.now(),
+      destination: "",
+      activity: "",
+      time: "",
+      category: "",
+      cost: "",
+      duration: "",
+    });
 
-    setActivities(updatedActivities);
-    setShowModal(false);
+    setShowModal(true);
   };
 
+  // Save (Add or Edit)
+  const handleSave = () => {
+    const exists = activities.some(
+      (item) => item.id === editingActivity.id
+    );
+
+    if (exists) {
+      setActivities(
+        activities.map((item) =>
+          item.id === editingActivity.id ? editingActivity : item
+        )
+      );
+    } else {
+      setActivities([...activities, editingActivity]);
+    }
+
+    setShowModal(false);
+    setEditingActivity(null);
+  };
+
+  // Delete
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this activity?")) {
       setActivities(activities.filter((item) => item.id !== id));
@@ -55,19 +81,16 @@ function ManageActivities() {
 
   return (
     <div className="admin-layout">
-
       <AdminSidebar />
 
       <div className="admin-content">
-
         <h1>Manage Destination Activities</h1>
 
-        <button className="add-btn">
+        <button className="add-btn" onClick={handleAdd}>
           + Add Activity
         </button>
 
         <table className="admin-table">
-
           <thead>
             <tr>
               <th>ID</th>
@@ -82,11 +105,8 @@ function ManageActivities() {
           </thead>
 
           <tbody>
-
             {activities.map((item) => (
-
               <tr key={item.id}>
-
                 <td>{item.id}</td>
                 <td>{item.destination}</td>
                 <td>{item.activity}</td>
@@ -96,11 +116,10 @@ function ManageActivities() {
                 <td>{item.duration}</td>
 
                 <td>
-
                   <button
                     className="edit-btn"
                     onClick={() => {
-                      setEditingActivity(item);
+                      setEditingActivity({ ...item });
                       setShowModal(true);
                     }}
                   >
@@ -113,27 +132,26 @@ function ManageActivities() {
                   >
                     Delete
                   </button>
-
                 </td>
-
               </tr>
-
             ))}
-
           </tbody>
-
         </table>
 
         {showModal && editingActivity && (
-
           <Modal
-            title="Edit Activity"
-            onClose={() => setShowModal(false)}
+            title={
+              activities.some((item) => item.id === editingActivity.id)
+                ? "Edit Activity"
+                : "Add Activity"
+            }
+            onClose={() => {
+              setShowModal(false);
+              setEditingActivity(null);
+            }}
             onSave={handleSave}
           >
-
             <label>Destination</label>
-
             <input
               type="text"
               value={editingActivity.destination}
@@ -146,7 +164,6 @@ function ManageActivities() {
             />
 
             <label>Activity</label>
-
             <input
               type="text"
               value={editingActivity.activity}
@@ -159,7 +176,6 @@ function ManageActivities() {
             />
 
             <label>Time Slot</label>
-
             <input
               type="text"
               value={editingActivity.time}
@@ -172,7 +188,6 @@ function ManageActivities() {
             />
 
             <label>Category</label>
-
             <input
               type="text"
               value={editingActivity.category}
@@ -185,7 +200,6 @@ function ManageActivities() {
             />
 
             <label>Cost</label>
-
             <input
               type="text"
               value={editingActivity.cost}
@@ -198,7 +212,6 @@ function ManageActivities() {
             />
 
             <label>Duration</label>
-
             <input
               type="text"
               value={editingActivity.duration}
@@ -209,13 +222,9 @@ function ManageActivities() {
                 })
               }
             />
-
           </Modal>
-
         )}
-
       </div>
-
     </div>
   );
 }

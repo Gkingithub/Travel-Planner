@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Admin.css";
-
+import { FaRobot } from "react-icons/fa";
 function AdminSidebar() {
   return (
     <div className="admin-sidebar">
@@ -22,6 +22,10 @@ function AdminSidebar() {
           <Link to="/admin/trips">Manage Trips</Link>
 
         </li>
+        
+        <li>
+          <Link to="/admin/recommendation">Recommendation</Link>
+        </li>
 
         <li>
           <Link to="/admin/activities">Manage Activities</Link>
@@ -35,7 +39,6 @@ function AdminSidebar() {
           <Link to="/admin/feedback">Feedback</Link>
         </li>
 
-        
 
         <li>
           <Link to="/admin/login">Logout</Link>
