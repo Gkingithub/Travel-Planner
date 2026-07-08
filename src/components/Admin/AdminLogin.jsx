@@ -1,23 +1,55 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Admin.css";
-
+import Swal from "sweetalert2";
+import { loginAdmin } from "../../service/authSerive";
 function AdminLogin() {
 
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (username === "admin" && password === "admin123") {
-      navigate("/admin/dashboard");
-    } else {
-      alert("Invalid Username or Password");
+    console.log("Login button clicked");
+
+    if (!email || !password) {
+        Swal.fire({
+            icon: "error",
+            title: "Missing Fields",
+            text: "Please fill all fields",
+        });
+        return;
     }
-  };
+
+    console.log("Calling login API...");
+
+    try {
+        const result = await loginAdmin(email, password);
+
+        console.log(result);
+
+        localStorage.setItem("token", result.data.token);
+
+        Swal.fire({
+            icon: "success",
+            title: "Login Successful"
+        });
+
+        navigate("/admin/dashboard");
+
+    } catch (error) {
+        console.error(error);
+
+        Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: "Invalid email or password."
+        });
+    }
+};
 
   return (
     <div className="admin-login-container">
@@ -27,13 +59,13 @@ function AdminLogin() {
 
         <form onSubmit={handleLogin}>
 
-          <label>Username</label>
+          <label>Email</label>
 
           <input
-            type="text"
-            placeholder="Enter Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 

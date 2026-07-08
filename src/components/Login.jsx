@@ -30,6 +30,7 @@ const handleSubmit = async (e) => {
 
     try {
         const result = await login(email, password);
+        localStorage.setItem("token", result.data.token);
         console.log(result);
 
         Swal.fire({

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Recommendation.css";
-
+import { getRecommendations } from "../service/RecommendationService";
 function Recommendation() {
   const [preferences, setPreferences] = useState({
     adventure: false,
@@ -16,38 +16,56 @@ function Recommendation() {
 
   const [recommendations, setRecommendations] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, type, checked, value } = e.target;
+const handleChange = (e) => {
+  const { name, type, checked, value } = e.target;
 
-    setPreferences({
-      ...preferences,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
+  setPreferences({
+    ...preferences,
+    [name]: type === "checkbox" ? checked : value,
+  });
+};
 
-  const handleRecommend = () => {
-    // Dummy recommendations
-    setRecommendations([
-      {
-        id: 1,
-        destination: "Pokhara",
-        similarity: "96%",
-        description: "Perfect for adventure and nature lovers.",
-      },
-      {
-        id: 2,
-        destination: "Chitwan",
-        similarity: "87%",
-        description: "Ideal for wildlife enthusiasts.",
-      },
-      {
-        id: 3,
-        destination: "Mustang",
-        similarity: "81%",
-        description: "Great for cultural exploration.",
-      },
-    ]);
-  };
+const handleRecommend = async () => {
+  try {
+    const request = {
+      travelDate: new Date().toISOString(),
+      days: Number(preferences.days),
+      budget:
+        preferences.budget === "Low"
+          ? 20000
+          : preferences.budget === "Medium"
+          ? 50000
+          : 100000,
+      travellers: 2,
+      transportation: "Bus",
+      hotelCategory: preferences.budget,
+
+      adventure: preferences.adventure ? 9 : 1,
+      nature: preferences.nature ? 9 : 1,
+      culture: preferences.cultural ? 9 : 1,
+      luxury: preferences.luxury ? 9 : 1,
+      wildlife: preferences.wildlife ? 9 : 1,
+      trekking: preferences.trekking ? 9 : 1,
+      religious: preferences.religious ? 9 : 1,
+    };
+
+    const response = await getRecommendations(request);
+
+    if (response.success) {
+      setRecommendations(response.data);
+    } else {
+      alert(response.message);
+    }
+  } catch (error) {
+    console.error("Recommendation Error:", error);
+
+    if (error.response?.status === 401) {
+      alert("Unauthorized. Please log in again.");
+    } else {
+      alert("Failed to get recommendations.");
+    }
+  }
+};
 
   return (
     <div className="recommend-page">
@@ -166,9 +184,9 @@ function Recommendation() {
 
           {recommendations.map((item) => (
 
-            <div className="recommend-card" key={item.id}>
+            <div className="recommend-card" key={item.destinationId}>
 
-              <h3>{item.destination}</h3>
+              <h3>{item.destinationName}</h3>
 
               <p>
                 <strong>Similarity:</strong> {item.similarity}
