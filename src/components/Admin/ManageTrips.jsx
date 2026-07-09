@@ -1,68 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import AdminSidebar from "./AdminSidebar";
 import Modal from "./Modal";
 
-function ManageTrips() {
-  const [trips, setTrips] = useState([
-    {
-      id: 1,
-      destination: "Pokhara",
-      days: 3,
-      price: "Rs. 15,000",
-    },
-    {
-      id: 2,
-      destination: "Chitwan",
-      days: 2,
-      price: "Rs. 18,000",
-    },
-    {
-      id: 3,
-      destination: "Mustang",
-      days: 5,
-      price: "Rs. 30,000",
-    },
-  ]);
+import {
+  getDestinations,
+  createDestination,
+  updateDestination,
+  deleteDestination,
+} from "../../service/destinationService";
 
+function ManageDestination() {
+  const [destinations, setDestinations] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [editingTrip, setEditingTrip] = useState(null);
+  const [editingDestination, setEditingDestination] = useState(null);
 
-  // Open Add Destination Form
+  useEffect(() => {
+    loadDestinations();
+  }, []);
+
+  const loadDestinations = async () => {
+    try {
+      const response = await getDestinations();
+
+      if (response.success) {
+        setDestinations(response.data);
+      } else {
+        setDestinations([]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleAdd = () => {
-    setEditingTrip({
-      id: Date.now(), // Unique ID
-      destination: "",
-      days: "",
-      price: "",
+    setEditingDestination({
+      destinationId: 0,
+      name: "",
+      city: "",
+      country: "",
+      description: "",
+      averageBudget: "",
+      imageUrl: null,
     });
+
     setShowModal(true);
   };
 
-  // Save (Add or Edit)
-  const handleSave = () => {
-    const exists = trips.some((trip) => trip.id === editingTrip.id);
+  const handleSave = async () => {
+    try {
+      if (editingDestination.destinationId > 0) {
+        await updateDestination(
+          editingDestination.destinationId,
+          editingDestination
+        );
+      } else {
+        await createDestination(editingDestination);
+      }
 
-    if (exists) {
-      // Edit
-      setTrips(
-        trips.map((trip) =>
-          trip.id === editingTrip.id ? editingTrip : trip
-        )
-      );
-    } else {
-      // Add
-      setTrips([...trips, editingTrip]);
+      setShowModal(false);
+      loadDestinations();
+    } catch (error) {
+      console.log(error);
     }
-
-    setShowModal(false);
-    setEditingTrip(null);
   };
 
-  // Delete
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this destination?")) {
-      setTrips(trips.filter((trip) => trip.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this destination?"))
+      return;
+
+    try {
+      await deleteDestination(id);
+      loadDestinations();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -73,100 +84,187 @@ function ManageTrips() {
       <div className="admin-content">
         <h1>Manage Destinations</h1>
 
-        <button className="add-btn" onClick={handleAdd}>
-          + Add Destination
-        </button>
+        <div className="button-container">
+          <button
+            type="button"
+            className="add-user-btn"
+            onClick={handleAdd}
+          >
+            Add Destination
+          </button>
+        </div>
 
         <table className="admin-table">
           <thead>
             <tr>
               <th>ID</th>
-              <th>Destination</th>
-              <th>Duration</th>
-              <th>Price</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Country</th>
+              <th>Budget</th>
+              <th>Image</th>
               <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {trips.map((trip) => (
-              <tr key={trip.id}>
-                <td>{trip.id}</td>
-                <td>{trip.destination}</td>
-                <td>{trip.days} Days</td>
-                <td>{trip.price}</td>
+            {destinations.length > 0 ? (
+              destinations.map((destination) => (
+                <tr key={destination.destinationId}>
+                  <td>{destination.destinationId}</td>
 
-                <td>
-                  <button
-                    className="edit-btn"
-                    onClick={() => {
-                      setEditingTrip({ ...trip });
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
+                  <td>{destination.name}</td>
 
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(trip.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
+                  <td>{destination.city}</td>
+
+                  <td>{destination.country}</td>
+
+                  <td>{destination.averageBudget}</td>
+
+                  <td>
+                    {destination.imageUrl && (
+                      <img
+                        src={`http://localhost:5055${destination.imageUrl}`}
+                        alt={destination.name}
+                        width="70"
+                        height="50"
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )}
+                  </td>
+
+                  <td>
+                    <button
+                      className="edit-btn"
+                      onClick={() => {
+                        setEditingDestination({
+                          ...destination,
+                        });
+
+                        setShowModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() =>
+                        handleDelete(destination.destinationId)
+                      }
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">No destinations found.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 
-        {showModal && editingTrip && (
+        {showModal && editingDestination && (
           <Modal
             title={
-              trips.some((trip) => trip.id === editingTrip.id)
+              editingDestination.destinationId
                 ? "Edit Destination"
                 : "Add Destination"
             }
             onClose={() => {
               setShowModal(false);
-              setEditingTrip(null);
+              setEditingDestination(null);
             }}
             onSave={handleSave}
-          >
-            <label>Destination</label>
+          >            <label>Name</label>
             <input
               type="text"
-              value={editingTrip.destination}
+              value={editingDestination.name}
               onChange={(e) =>
-                setEditingTrip({
-                  ...editingTrip,
-                  destination: e.target.value,
+                setEditingDestination({
+                  ...editingDestination,
+                  name: e.target.value,
                 })
               }
             />
 
-            <label>Duration (Days)</label>
+            <label>City</label>
+            <input
+              type="text"
+              value={editingDestination.city}
+              onChange={(e) =>
+                setEditingDestination({
+                  ...editingDestination,
+                  city: e.target.value,
+                })
+              }
+            />
+
+            <label>Country</label>
+            <input
+              type="text"
+              value={editingDestination.country}
+              onChange={(e) =>
+                setEditingDestination({
+                  ...editingDestination,
+                  country: e.target.value,
+                })
+              }
+            />
+
+            <label>Description</label>
+            <textarea
+              rows="4"
+              value={editingDestination.description}
+              onChange={(e) =>
+                setEditingDestination({
+                  ...editingDestination,
+                  description: e.target.value,
+                })
+              }
+            />
+
+            <label>Average Budget</label>
             <input
               type="number"
-              value={editingTrip.days}
+              value={editingDestination.averageBudget}
               onChange={(e) =>
-                setEditingTrip({
-                  ...editingTrip,
-                  days: Number(e.target.value),
+                setEditingDestination({
+                  ...editingDestination,
+                  averageBudget: e.target.value,
                 })
               }
             />
 
-            <label>Price</label>
+            <label>Image</label>
             <input
-              type="text"
-              value={editingTrip.price}
+              type="file"
+              accept="image/*"
               onChange={(e) =>
-                setEditingTrip({
-                  ...editingTrip,
-                  price: e.target.value,
+                setEditingDestination({
+                  ...editingDestination,
+                  imageUrl: e.target.files[0],
                 })
               }
             />
+
+            {editingDestination.imageUrl &&
+              typeof editingDestination.imageUrl === "string" && (
+                <img
+                  src={`http://localhost:5055${editingDestination.imageUrl}`}
+                  alt="Destination"
+                  width="120"
+                  style={{
+                    marginTop: "10px",
+                    borderRadius: "6px",
+                  }}
+                />
+              )}
           </Modal>
         )}
       </div>
@@ -174,4 +272,4 @@ function ManageTrips() {
   );
 }
 
-export default ManageTrips;
+export default ManageDestination;

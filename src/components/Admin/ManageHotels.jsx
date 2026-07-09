@@ -46,7 +46,7 @@ function ManageHotels() {
       setHotels(hotels.filter((hotel) => hotel.id !== id));
     }
   };
-
+const handleAdd = () => {}
   return (
     <div className="admin-layout">
 
@@ -54,9 +54,11 @@ function ManageHotels() {
 
       <div className="admin-content">
           <h1> Manage Hotel</h1>
-         <button className="add-btn">
-          + Add Hotel
-        </button>
+            <div className="button-container">
+          <button type="button" className="add-user-btn" onClick={handleAdd}>
+            Add Hotels
+          </button>
+        </div>
 
         <table className="admin-table">
 

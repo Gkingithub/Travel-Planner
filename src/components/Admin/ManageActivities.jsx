@@ -86,9 +86,11 @@ function ManageActivities() {
       <div className="admin-content">
         <h1>Manage Destination Activities</h1>
 
-        <button className="add-btn" onClick={handleAdd}>
-          + Add Activity
-        </button>
+           <div className="button-container">
+          <button type="button" className="add-user-btn" onClick={handleAdd}>
+            Add Activities
+          </button>
+        </div>
 
         <table className="admin-table">
           <thead>
