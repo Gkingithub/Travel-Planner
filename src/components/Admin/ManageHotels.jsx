@@ -1,155 +1,245 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import AdminSidebar from "./AdminSidebar";
 import Modal from "./Modal";
 
-function ManageHotels() {
+import {
+  getHotels,
+  createHotel,
+  updateHotel,
+  deleteHotel,
+} from "../../service/hotelService";
 
-  const [hotels, setHotels] = useState([
-    {
-      id: 1,
-      name: "Hotel Barahi",
-      location: "Pokhara",
-      category: "4 Star",
-      price: "Rs. 5000",
-    },
-    {
-      id: 2,
-      name: "Jungle Villa",
-      location: "Chitwan",
-      category: "3 Star",
-      price: "Rs. 3500",
-    },
-    {
-      id: 3,
-      name: "Mountain Resort",
-      location: "Mustang",
-      category: "5 Star",
-      price: "Rs. 7000",
-    },
-  ]);
+import { getDestinations } from "../../service/destinationService";
+
+function ManageHotels() {
+  const [hotels, setHotels] = useState([]);
+  const [destinations, setDestinations] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const [editingHotel, setEditingHotel] = useState(null);
 
-  const handleSave = () => {
-    const updatedHotels = hotels.map((hotel) =>
-      hotel.id === editingHotel.id ? editingHotel : hotel
-    );
+  useEffect(() => {
+    loadHotels();
+    loadDestinations();
+  }, []);
 
-    setHotels(updatedHotels);
-    setShowModal(false);
-  };
+  const loadHotels = async () => {
+    try {
+      const response = await getHotels();
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this hotel?")) {
-      setHotels(hotels.filter((hotel) => hotel.id !== id));
+      if (response.success) {
+        setHotels(response.data);
+      } else {
+        setHotels([]);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
-const handleAdd = () => {}
+
+  const loadDestinations = async () => {
+    try {
+      const response = await getDestinations();
+
+      if (response.success) {
+        setDestinations(response.data);
+      } else {
+        setDestinations([]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAdd = () => {
+    setEditingHotel({
+      hotelId: 0,
+      hotelName: "",
+      destinationId: "",
+      pricePerNight: "",
+      rating: "",
+      category: "",
+      facilities: "",
+      imageUrl: null,
+    });
+
+    setShowModal(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      if (editingHotel.hotelId > 0) {
+        await updateHotel(editingHotel.hotelId, editingHotel);
+      } else {
+        await createHotel(editingHotel);
+      }
+
+      setShowModal(false);
+      setEditingHotel(null);
+
+      loadHotels();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this hotel?"))
+      return;
+
+    try {
+      await deleteHotel(id);
+      loadHotels();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="admin-layout">
-
       <AdminSidebar />
 
       <div className="admin-content">
-          <h1> Manage Hotel</h1>
-            <div className="button-container">
-          <button type="button" className="add-user-btn" onClick={handleAdd}>
-            Add Hotels
+        <h1>Manage Hotels</h1>
+
+        <div className="button-container">
+          <button
+            type="button"
+            className="add-user-btn"
+            onClick={handleAdd}
+          >
+            Add Hotel
           </button>
         </div>
 
         <table className="admin-table">
-
           <thead>
             <tr>
               <th>ID</th>
-              <th>Hotel Name</th>
-              <th>Location</th>
+              <th>Hotel</th>
+              <th>Destination</th>
               <th>Category</th>
-              <th>Price/Night</th>
+              <th>Price</th>
+              <th>Rating</th>
+              <th>Image</th>
               <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
+            {hotels.length > 0 ? (
+              hotels.map((hotel) => (
+                <tr key={hotel.hotelId}>
+                  <td>{hotel.hotelId}</td>
 
-            {hotels.map((hotel) => (
+                  <td>{hotel.hotelName}</td>
 
-              <tr key={hotel.id}>
+                  <td>{hotel.destination?.name}</td>
 
-                <td>{hotel.id}</td>
-                <td>{hotel.name}</td>
-                <td>{hotel.location}</td>
-                <td>{hotel.category}</td>
-                <td>{hotel.price}</td>
+                  <td>{hotel.category}</td>
 
-                <td>
+                  <td>Rs. {hotel.pricePerNight}</td>
 
-                  <button
-                    className="edit-btn"
-                    onClick={() => {
-                      setEditingHotel(hotel);
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
+                  <td>{hotel.rating}</td>
 
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(hotel.id)}
-                  >
-                    Delete
-                  </button>
+                  <td>
+                    {hotel.imageUrl && (
+                      <img
+                        src={`http://localhost:5055${hotel.imageUrl}`}
+                        alt={hotel.hotelName}
+                        width="70"
+                        height="50"
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    )}
+                  </td>
 
-                </td>
+                  <td>
+                    <button
+                      className="edit-btn"
+                      onClick={() => {
+                        setEditingHotel({
+                          hotelId: hotel.hotelId,
+                          hotelName: hotel.hotelName,
+                          destinationId: hotel.destinationId,
+                          pricePerNight: hotel.pricePerNight,
+                          rating: hotel.rating,
+                          category: hotel.category,
+                          facilities: hotel.facilities,
+                          imageUrl: hotel.imageUrl,
+                        });
 
+                        setShowModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(hotel.hotelId)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8">No hotels found.</td>
               </tr>
-
-            ))}
-
+            )}
           </tbody>
-
-        </table>
-
-        {showModal && editingHotel && (
-
+        </table>        {showModal && editingHotel && (
           <Modal
-            title="Edit Hotel"
-            onClose={() => setShowModal(false)}
+            title={
+              editingHotel.hotelId > 0 ? "Edit Hotel" : "Add Hotel"
+            }
+            onClose={() => {
+              setShowModal(false);
+              setEditingHotel(null);
+            }}
             onSave={handleSave}
           >
-
             <label>Hotel Name</label>
-
             <input
               type="text"
-              value={editingHotel.name}
+              value={editingHotel.hotelName}
               onChange={(e) =>
                 setEditingHotel({
                   ...editingHotel,
-                  name: e.target.value,
+                  hotelName: e.target.value,
                 })
               }
             />
 
-            <label>Location</label>
-
-            <input
-              type="text"
-              value={editingHotel.location}
+            <label>Destination</label>
+            <select
+              value={editingHotel.destinationId}
               onChange={(e) =>
                 setEditingHotel({
                   ...editingHotel,
-                  location: e.target.value,
+                  destinationId: Number(e.target.value),
                 })
               }
-            />
+            >
+              <option value="">Select Destination</option>
+
+              {destinations.map((destination) => (
+                <option
+                  key={destination.destinationId}
+                  value={destination.destinationId}
+                >
+                  {destination.name}
+                </option>
+              ))}
+            </select>
 
             <label>Category</label>
-
             <select
               value={editingHotel.category}
               onChange={(e) =>
@@ -159,35 +249,81 @@ const handleAdd = () => {}
                 })
               }
             >
-              <option>Budget Hotel</option>
-              <option>3 Star</option>
-              <option>4 Star</option>
-              <option>5 Star</option>
+              <option value="">Select Category</option>
+              <option value="Budget Hotel">Budget Hotel</option>
+              <option value="3 Star">3 Star</option>
+              <option value="4 Star">4 Star</option>
+              <option value="5 Star">5 Star</option>
             </select>
 
             <label>Price Per Night</label>
-
             <input
-              type="text"
-              value={editingHotel.price}
+              type="number"
+              value={editingHotel.pricePerNight}
               onChange={(e) =>
                 setEditingHotel({
                   ...editingHotel,
-                  price: e.target.value,
+                  pricePerNight: e.target.value,
                 })
               }
             />
-            
 
+            <label>Rating</label>
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              max="5"
+              value={editingHotel.rating}
+              onChange={(e) =>
+                setEditingHotel({
+                  ...editingHotel,
+                  rating: e.target.value,
+                })
+              }
+            />
+
+            <label>Facilities</label>
+            <textarea
+              rows="4"
+              value={editingHotel.facilities}
+              onChange={(e) =>
+                setEditingHotel({
+                  ...editingHotel,
+                  facilities: e.target.value,
+                })
+              }
+            />
+
+            <label>Hotel Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setEditingHotel({
+                  ...editingHotel,
+                  imageUrl: e.target.files[0],
+                })
+              }
+            />
+
+            {editingHotel.imageUrl &&
+              typeof editingHotel.imageUrl === "string" && (
+                <img
+                  src={`http://localhost:5055${editingHotel.imageUrl}`}
+                  alt="Hotel"
+                  width="120"
+                  style={{
+                    marginTop: "10px",
+                    borderRadius: "6px",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
           </Modal>
-          
-
         )}
-
       </div>
-
     </div>
-    
   );
 }
 

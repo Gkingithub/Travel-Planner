@@ -1,149 +1,253 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import AdminSidebar from "./AdminSidebar";
 import Modal from "./Modal";
 
+import { getDestinations } from "../../service/destinationService";
+import { getDestinationFeatures } from "../../service/destinationFeatureService";
+
+import {
+  getActivities,
+  createActivity,
+  updateActivity,
+  deleteActivity,
+} from "../../service/destinationActivityService";
+
 function ManageActivities() {
-  const [activities, setActivities] = useState([
-    {
-      id: 1,
-      destination: "Pokhara",
-      activity: "Boating",
-      time: "Morning",
-      category: "Adventure",
-      cost: "Rs. 500",
-      duration: "2 Hours",
-    },
-    {
-      id: 2,
-      destination: "Chitwan",
-      activity: "Jungle Safari",
-      time: "Afternoon",
-      category: "Wildlife",
-      cost: "Rs. 2500",
-      duration: "4 Hours",
-    },
-    {
-      id: 3,
-      destination: "Mustang",
-      activity: "Monastery Visit",
-      time: "Evening",
-      category: "Religious",
-      cost: "Rs. 300",
-      duration: "1 Hour",
-    },
-  ]);
+  const [activities, setActivities] = useState([]);
+  const [destinations, setDestinations] = useState([]);
+  const [destinationFeatures, setDestinationFeatures] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
 
-  // Open Add Activity Form
+  useEffect(() => {
+    loadActivities();
+    loadDestinations();
+    loadDestinationFeatures();
+  }, []);
+
+  // ============================
+  // Load Activities
+  // ============================
+  const loadActivities = async () => {
+    try {
+      const response = await getActivities();
+
+      if (response.success) {
+        setActivities(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ============================
+  // Load Destinations
+  // ============================
+  const loadDestinations = async () => {
+    try {
+      const response = await getDestinations();
+
+      if (response.success) {
+        setDestinations(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ============================
+  // Load Destination Features
+  // ============================
+  const loadDestinationFeatures = async () => {
+    try {
+      const response = await getDestinationFeatures();
+
+      if (response.success) {
+        setDestinationFeatures(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ============================
+  // Add Activity
+  // ============================
   const handleAdd = () => {
     setEditingActivity({
-      id: Date.now(),
-      destination: "",
-      activity: "",
-      time: "",
+      destinationActivityId: 0,
+      destinationId: "",
+      activityName: "",
       category: "",
-      cost: "",
-      duration: "",
+      timeSlot: "",
+      estimatedCost: "",
+      durationHours: "",
+      imageUrl: "",
     });
 
     setShowModal(true);
   };
 
-  // Save (Add or Edit)
-  const handleSave = () => {
-    const exists = activities.some(
-      (item) => item.id === editingActivity.id
-    );
+  // ============================
+  // Save Activity
+  // ============================
+  const handleSave = async () => {
+    try {
+      if (editingActivity.destinationActivityId > 0) {
+        await updateActivity(
+          editingActivity.destinationActivityId,
+          editingActivity
+        );
+      } else {
+        await createActivity(editingActivity);
+      }
 
-    if (exists) {
-      setActivities(
-        activities.map((item) =>
-          item.id === editingActivity.id ? editingActivity : item
-        )
-      );
-    } else {
-      setActivities([...activities, editingActivity]);
-    }
+      setShowModal(false);
+      setEditingActivity(null);
 
-    setShowModal(false);
-    setEditingActivity(null);
-  };
-
-  // Delete
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this activity?")) {
-      setActivities(activities.filter((item) => item.id !== id));
+      loadActivities();
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  // ============================
+  // Delete Activity
+  // ============================
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this activity?"))
+      return;
+
+    try {
+      await deleteActivity(id);
+      loadActivities();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ============================
+  // Filter Categories
+  // ============================
+  const selectedFeature = destinationFeatures.find(
+    (x) => x.destinationId === Number(editingActivity?.destinationId)
+  );
+
+  const categories = [];
+
+  if (selectedFeature) {
+    if (selectedFeature.adventure) categories.push("Adventure");
+    if (selectedFeature.cultural) categories.push("Cultural");
+    if (selectedFeature.nature) categories.push("Nature");
+    if (selectedFeature.historical) categories.push("Historical");
+    if (selectedFeature.wildlife) categories.push("Wildlife");
+    if (selectedFeature.religious) categories.push("Religious");
+    if (selectedFeature.nightLife) categories.push("Night Life");
+    if (selectedFeature.shopping) categories.push("Shopping");
+    if (selectedFeature.photography) categories.push("Photography");
+    if (selectedFeature.hiking) categories.push("Hiking");
+    if (selectedFeature.boating) categories.push("Boating");
+    if (selectedFeature.paragliding) categories.push("Paragliding");
+  }
 
   return (
     <div className="admin-layout">
       <AdminSidebar />
 
       <div className="admin-content">
+
         <h1>Manage Destination Activities</h1>
 
-           <div className="button-container">
-          <button type="button" className="add-user-btn" onClick={handleAdd}>
-            Add Activities
+        <div className="button-container">
+          <button
+            className="add-user-btn"
+            onClick={handleAdd}
+          >
+            Add Activity
           </button>
         </div>
 
         <table className="admin-table">
+
           <thead>
+
             <tr>
               <th>ID</th>
               <th>Destination</th>
               <th>Activity</th>
-              <th>Time Slot</th>
               <th>Category</th>
+              <th>Time Slot</th>
               <th>Cost</th>
               <th>Duration</th>
               <th>Action</th>
             </tr>
+
           </thead>
 
           <tbody>
-            {activities.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.destination}</td>
-                <td>{item.activity}</td>
-                <td>{item.time}</td>
-                <td>{item.category}</td>
-                <td>{item.cost}</td>
-                <td>{item.duration}</td>
 
-                <td>
-                  <button
-                    className="edit-btn"
-                    onClick={() => {
-                      setEditingActivity({ ...item });
-                      setShowModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
+            {activities.length > 0 ? (
+              activities.map((item) => (
+                <tr key={item.destinationActivityId}>
 
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </button>
+                  <td>{item.destinationActivityId}</td>
+
+                  <td>{item.destinationName}</td>
+
+                  <td>{item.activityName}</td>
+
+                  <td>{item.category}</td>
+
+                  <td>{item.timeSlot}</td>
+
+                  <td>{item.estimatedCost}</td>
+
+                  <td>{item.durationHours} hrs</td>
+
+                  <td>
+
+                    <button
+                      className="edit-btn"
+                      onClick={() => {
+                        setEditingActivity({
+                          ...item,
+                        });
+
+                        setShowModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() =>
+                        handleDelete(item.destinationActivityId)
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </td>
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8">
+                  No activities found.
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            )}
 
-        {showModal && editingActivity && (
+          </tbody>
+
+        </table>        {showModal && editingActivity && (
           <Modal
             title={
-              activities.some((item) => item.id === editingActivity.id)
+              editingActivity.destinationActivityId > 0
                 ? "Edit Activity"
                 : "Add Activity"
             }
@@ -153,45 +257,37 @@ function ManageActivities() {
             }}
             onSave={handleSave}
           >
+            {/* Destination */}
+
             <label>Destination</label>
-            <input
-              type="text"
-              value={editingActivity.destination}
-              onChange={(e) =>
-                setEditingActivity({
-                  ...editingActivity,
-                  destination: e.target.value,
-                })
-              }
-            />
 
-            <label>Activity</label>
-            <input
-              type="text"
-              value={editingActivity.activity}
+            <select
+              value={editingActivity.destinationId}
               onChange={(e) =>
                 setEditingActivity({
                   ...editingActivity,
-                  activity: e.target.value,
+                  destinationId: Number(e.target.value),
+                  category: "", // Reset category when destination changes
                 })
               }
-            />
+            >
+              <option value="">Select Destination</option>
 
-            <label>Time Slot</label>
-            <input
-              type="text"
-              value={editingActivity.time}
-              onChange={(e) =>
-                setEditingActivity({
-                  ...editingActivity,
-                  time: e.target.value,
-                })
-              }
-            />
+              {destinations.map((destination) => (
+                <option
+                  key={destination.destinationId}
+                  value={destination.destinationId}
+                >
+                  {destination.name}
+                </option>
+              ))}
+            </select>
+
+            {/* Category */}
 
             <label>Category</label>
-            <input
-              type="text"
+
+            <select
               value={editingActivity.category}
               onChange={(e) =>
                 setEditingActivity({
@@ -199,31 +295,108 @@ function ManageActivities() {
                   category: e.target.value,
                 })
               }
-            />
+            >
+              <option value="">Select Category</option>
 
-            <label>Cost</label>
+              {categories.map((category) => (
+                <option
+                  key={category}
+                  value={category}
+                >
+                  {category}
+                </option>
+              ))}
+            </select>
+
+            {/* Activity Name */}
+
+            <label>Activity Name</label>
+
             <input
               type="text"
-              value={editingActivity.cost}
+              value={editingActivity.activityName}
               onChange={(e) =>
                 setEditingActivity({
                   ...editingActivity,
-                  cost: e.target.value,
+                  activityName: e.target.value,
                 })
               }
             />
 
-            <label>Duration</label>
+            {/* Time Slot */}
+
+            <label>Time Slot</label>
+
             <input
               type="text"
-              value={editingActivity.duration}
+              placeholder="Morning"
+              value={editingActivity.timeSlot}
               onChange={(e) =>
                 setEditingActivity({
                   ...editingActivity,
-                  duration: e.target.value,
+                  timeSlot: e.target.value,
                 })
               }
             />
+
+            {/* Estimated Cost */}
+
+            <label>Estimated Cost</label>
+
+            <input
+              type="number"
+              value={editingActivity.estimatedCost}
+              onChange={(e) =>
+                setEditingActivity({
+                  ...editingActivity,
+                  estimatedCost: e.target.value,
+                })
+              }
+            />
+
+            {/* Duration */}
+
+            <label>Duration (Hours)</label>
+
+            <input
+              type="number"
+              value={editingActivity.durationHours}
+              onChange={(e) =>
+                setEditingActivity({
+                  ...editingActivity,
+                  durationHours: e.target.value,
+                })
+              }
+            />
+
+            {/* Image URL */}
+
+            <label>Image URL</label>
+
+            <input
+              type="text"
+              placeholder="https://example.com/image.jpg"
+              value={editingActivity.imageUrl || ""}
+              onChange={(e) =>
+                setEditingActivity({
+                  ...editingActivity,
+                  imageUrl: e.target.value,
+                })
+              }
+            />
+
+            {editingActivity.imageUrl && (
+              <img
+                src={editingActivity.imageUrl}
+                alt="Activity"
+                width="150"
+                style={{
+                  marginTop: "10px",
+                  borderRadius: "6px",
+                  objectFit: "cover",
+                }}
+              />
+            )}
           </Modal>
         )}
       </div>

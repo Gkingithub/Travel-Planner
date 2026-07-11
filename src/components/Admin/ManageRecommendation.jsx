@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import Select from "react-select";
 import "./Admin.css";
 import AdminSidebar from "./AdminSidebar";
 import Modal from "./Modal";
+
 import {
   getDestinationFeatures,
   createDestinationFeature,
@@ -26,7 +28,12 @@ function ManageRecommendations() {
   const loadRecommendations = async () => {
     try {
       const response = await getDestinationFeatures();
-      setRecommendations(response.data);
+
+      if (response.success) {
+        setRecommendations(response.data);
+      } else {
+        setRecommendations([]);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -35,11 +42,22 @@ function ManageRecommendations() {
   const loadDestinations = async () => {
     try {
       const response = await getDestinations();
-      setDestinations(response.data);
+
+      if (response.success) {
+        setDestinations(response.data);
+      } else {
+        setDestinations([]);
+      }
     } catch (err) {
       console.log(err);
     }
   };
+
+  // Options for react-select
+  const destinationOptions = destinations.map((d) => ({
+    value: d.destinationId,
+    label: d.name,
+  }));
 
   const handleAdd = () => {
     setEditingData({
@@ -130,15 +148,15 @@ function ManageRecommendations() {
                 <tr key={item.destinationFeatureId}>
                   <td>{item.destinationFeatureId}</td>
 
-                  <td>{item.destination?.destinationName}</td>
+                  <td>{item.destinationName}</td>
 
-                  <td>{item.adventure ? "✓" : "✗"}</td>
-                  <td>{item.nature ? "✓" : "✗"}</td>
-                  <td>{item.wildlife ? "✓" : "✗"}</td>
-                  <td>{item.religious ? "✓" : "✗"}</td>
-                  <td>{item.culture ? "✓" : "✗"}</td>
-                  <td>{item.luxury ? "✓" : "✗"}</td>
-                  <td>{item.trekking ? "✓" : "✗"}</td>
+                  <td>{item.adventure}</td>
+                  <td>{item.nature}</td>
+                  <td>{item.wildlife}</td>
+                  <td>{item.religious}</td>
+                  <td>{item.culture}</td>
+                  <td>{item.luxury}</td>
+                  <td>{item.trekking}</td>
 
                   <td>
                     <button
@@ -147,6 +165,7 @@ function ManageRecommendations() {
                         setEditingData({
                           ...item,
                         });
+
                         setShowModal(true);
                       }}
                     >
@@ -166,7 +185,9 @@ function ManageRecommendations() {
               ))
             ) : (
               <tr>
-                <td colSpan="10">No destination features found.</td>
+                <td colSpan="10">
+                  No destination features found.
+                </td>
               </tr>
             )}
           </tbody>
@@ -184,127 +205,125 @@ function ManageRecommendations() {
               setEditingData(null);
             }}
             onSave={handleSave}
-          >
-            <label>Destination</label>
+          >            <label>Destination</label>
 
-            <select
-              value={editingData.destinationId}
+            <Select
+              options={destinationOptions}
+              placeholder="Search destination..."
+              isSearchable
+              value={
+                destinationOptions.find(
+                  (option) =>
+                    option.value === editingData.destinationId
+                ) || null
+              }
+              onChange={(selectedOption) =>
+                setEditingData({
+                  ...editingData,
+                  destinationId: selectedOption
+                    ? selectedOption.value
+                    : "",
+                })
+              }
+            />
+
+            <label>Adventure</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.adventure}
               onChange={(e) =>
                 setEditingData({
                   ...editingData,
-                  destinationId: Number(e.target.value),
+                  adventure: Number(e.target.value),
                 })
               }
-            >
-              <option value="">Select Destination</option>
+            />
 
-              {destinations.map((d) => (
-                <option
-                  key={d.destinationId}
-                  value={d.destinationId}
-                >
-                  {d.destinationName}
-                </option>
-              ))}
-            </select>
+            <label>Nature</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.nature}
+              onChange={(e) =>
+                setEditingData({
+                  ...editingData,
+                  nature: Number(e.target.value),
+                })
+              }
+            />
 
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.adventure}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    adventure: e.target.checked,
-                  })
-                }
-              />
-              Adventure
-            </label>
+            <label>Wildlife</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.wildlife}
+              onChange={(e) =>
+                setEditingData({
+                  ...editingData,
+                  wildlife: Number(e.target.value),
+                })
+              }
+            />
 
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.nature}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    nature: e.target.checked,
-                  })
-                }
-              />
-              Nature
-            </label>
+            <label>Religious</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.religious}
+              onChange={(e) =>
+                setEditingData({
+                  ...editingData,
+                  religious: Number(e.target.value),
+                })
+              }
+            />
 
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.wildlife}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    wildlife: e.target.checked,
-                  })
-                }
-              />
-              Wildlife
-            </label>
+            <label>Culture</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.culture}
+              onChange={(e) =>
+                setEditingData({
+                  ...editingData,
+                  culture: Number(e.target.value),
+                })
+              }
+            />
 
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.religious}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    religious: e.target.checked,
-                  })
-                }
-              />
-              Religious
-            </label>
+            <label>Luxury</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.luxury}
+              onChange={(e) =>
+                setEditingData({
+                  ...editingData,
+                  luxury: Number(e.target.value),
+                })
+              }
+            />
 
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.culture}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    culture: e.target.checked,
-                  })
-                }
-              />
-              Culture
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.luxury}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    luxury: e.target.checked,
-                  })
-                }
-              />
-              Luxury
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={editingData.trekking}
-                onChange={(e) =>
-                  setEditingData({
-                    ...editingData,
-                    trekking: e.target.checked,
-                  })
-                }
-              />
-              Trekking
-            </label>
+            <label>Trekking</label>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              value={editingData.trekking}
+              onChange={(e) =>
+                setEditingData({
+                  ...editingData,
+                  trekking: Number(e.target.value),
+                })
+              }
+            />
           </Modal>
         )}
       </div>

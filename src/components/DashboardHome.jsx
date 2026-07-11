@@ -1,9 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "./Dashboard.css";
+import Select from "react-select";
+import { getDestinations } from "../service/userDestinationService";
+import { getDashboard } from "../service/dashboardService";
+import { generateItinerary } from "../service/dashboardService";
 
 function DashboardHome({ user }) {
+  const [dashboard, setDashboard] = useState({
+    totalTrips: 0,
+    totalDestinations: 0,
+    uniqueDestinations: 0,
+    upcomingTrips: 0,
+  });
 
+
+  const handleStartDateChange = (e) => {
+
+    const startDate = e.target.value;
+
+    let days = "";
+
+    if (startDate && trip.endDate) {
+
+      const diff =
+        (new Date(trip.endDate) - new Date(startDate))
+        / (1000 * 60 * 60 * 24);
+
+      if (diff >= 0)
+        days = diff + 1;
+    }
+
+    setTrip({
+      ...trip,
+      startDate,
+      days
+    });
+  };
+  const handleEndDateChange = (e) => {
+
+    const endDate = e.target.value;
+
+    let days = "";
+
+    if (trip.startDate && endDate) {
+
+      const diff =
+        (new Date(endDate) - new Date(trip.startDate))
+        / (1000 * 60 * 60 * 24);
+
+      if (diff >= 0)
+        days = diff + 1;
+    }
+
+    setTrip({
+      ...trip,
+      endDate,
+      days
+    });
+  };
+  const [destinations, setDestinations] = useState([]);
+  const [plan, setPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [trip, setTrip] = useState({
     destination: "",
     startDate: "",
@@ -16,42 +74,117 @@ function DashboardHome({ user }) {
     hotel: "",
     interests: [],
   });
+const destinationOptions = destinations.map((destination) => ({
+  value: destination.destinationId,
+  label: `${destination.name} - ${destination.city}, ${destination.country}`,
+}));
+  useEffect(() => {
+    loadDashboard();
+    loadDestinations();
+  }, []);
 
-  const [plan, setPlan] = useState("");
+  const loadDashboard = async () => {
+    try {
+
+      const response = await getDashboard();
+
+      if (response.success) {
+        setDashboard(response.data);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const loadDestinations = async () => {
+
+    try {
+
+      const response = await getDestinations();
+
+      if (response.success) {
+        setDestinations(response.data);
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Unable to load destinations.",
+      });
+
+    }
+
+  };
+
+  // ==============================
+  // Handle Inputs
+  // ==============================
 
   const handleChange = (e) => {
+
+    const { name, value } = e.target;
+
+    if (name === "budget" || name === "travelers") {
+
+      if (value < 0) {
+        return;
+      }
+
+    }
+
     setTrip({
       ...trip,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
   };
 
   const handleInterestChange = (e) => {
-  const { value, checked } = e.target;
 
-  if (checked) {
-    setTrip({
-      ...trip,
-      interests: [...trip.interests, value],
-    });
-  } else {
-    setTrip({
-      ...trip,
-      interests: trip.interests.filter(
-        (interest) => interest !== value
-      ),
-    });
-  }
-};
+    const { value, checked } = e.target;
 
-  const generatePlan = () => {
+    if (checked) {
+
+      setTrip({
+        ...trip,
+        interests: [...trip.interests, value],
+      });
+
+    } else {
+
+      setTrip({
+        ...trip,
+        interests: trip.interests.filter(
+          (interest) => interest !== value
+        ),
+      });
+
+    }
+
+  };
+
+  // ==============================
+  // Generate Plan
+  // ==============================
+
+  const generatePlan = async () => {
+
+    // Required Validation
 
     if (
       !trip.destination ||
       !trip.startDate ||
       !trip.endDate ||
       !trip.days ||
-      !trip.budget
+      !trip.budget ||
+      !trip.travelers ||
+      !trip.transport ||
+      !trip.hotel
     ) {
 
       Swal.fire({
@@ -62,86 +195,167 @@ function DashboardHome({ user }) {
 
       return;
     }
-   
-    
-  
 
+    // Date Validation
 
-    const itinerary = `
-TRAVEL ITINERARY
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-Destination : ${trip.destination}
+    const startDate = new Date(trip.startDate);
+    const endDate = new Date(trip.endDate);
 
-Travel Date : ${trip.startDate} to ${trip.endDate}
+    if (startDate < today) {
 
-Duration : ${trip.days} Days
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Date",
+        text: "Travel date cannot be in the past.",
+      });
 
-Budget : Rs. ${trip.budget}
+      return;
+    }
 
-Travelers : ${trip.travelers}
+    if (endDate < startDate) {
 
-Travel Type : ${trip.travelType}
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Date",
+        text: "End date cannot be before start date.",
+      });
 
-Transportation : ${trip.transport}
+      return;
+    }
 
-Hotel Category : ${trip.hotel}
+    // Number Validation
 
-Interests : ${trip.interests.join(", ")}
+    if (Number(trip.days) <= 0) {
 
---------------------------------------------
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Days",
+        text: "Days must be greater than zero.",
+      });
 
-DAY 1
+      return;
+    }
 
-• Arrival at destination
+    if (Number(trip.budget) <= 0) {
 
-• Hotel Check-in
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Budget",
+        text: "Budget must be greater than zero.",
+      });
 
-• Explore nearby attractions
+      return;
+    }
 
-• Dinner at a local restaurant
+    if (Number(trip.travelers) <= 0) {
 
---------------------------------------------
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Travellers",
+        text: "Travellers must be greater than zero.",
+      });
 
-DAY 2
+      return;
+    }
+    if (Number(trip.budget) <= 0) {
 
-• Breakfast
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Budget",
+        text: "Budget must be greater than zero."
+      });
 
-• Visit famous tourist attractions
+      return;
+    }
+    if (Number(trip.travelers) <= 0) {
 
-• Local lunch
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Number",
+        text: "Travellers must be at least 1."
+      });
 
-• Evening sightseeing
+      return;
+    }
+    // Prepare Request
 
---------------------------------------------
+    const request = {
 
-DAY 3
+      destinationId: Number(trip.destination),
 
-• Shopping
+      travelDate: trip.startDate,
 
-• Local cultural experience
+      days: Number(trip.days),
 
-• Return to hotel
+      budget: Number(trip.budget),
 
---------------------------------------------
+      travellers: Number(trip.travelers),
 
-Thank you for using Yatriq.
-Have a safe and enjoyable journey.
-`;
+      transportation: trip.transport,
 
-    setPlan(itinerary);
+      hotelCategory: trip.hotel,
 
-    Swal.fire({
-      icon: "success",
-      title: "Travel Plan Generated",
-      timer: 1500,
-      showConfirmButton: false,
-    });
+      adventure: trip.interests.includes("Adventure") ? 1 : 0,
 
-  };
+      nature: trip.interests.includes("Nature") ? 1 : 0,
 
-  
+      culture: trip.interests.includes("Cultural") ? 1 : 0,
 
-  return (
+      luxury: trip.interests.includes("Luxury") ? 1 : 0,
+
+      wildlife: trip.interests.includes("Wildlife") ? 1 : 0,
+
+      trekking: 0,
+
+      family: 0,
+
+      relaxation: 0,
+
+      religious: trip.interests.includes("Religious") ? 1 : 0,
+
+      nightLife: 0,
+
+    };
+
+    try {
+
+      setLoading(true);
+
+      const response = await generateItinerary(request);
+
+      if (response.success) {
+
+        setPlan(response.data);
+
+        Swal.fire({
+          icon: "success",
+          title: "Travel Plan Generated",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+      }
+
+    } catch (error) {
+
+      Swal.fire({
+        icon: "error",
+        title: "Generation Failed",
+        text:
+          error.response?.data?.message ||
+          "Unable to generate itinerary.",
+      });
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }; return (
 
     <div className="dashboard-home">
 
@@ -152,7 +366,7 @@ Have a safe and enjoyable journey.
         <div>
 
           <h1>
-            Welcome, {user.name} 
+            Welcome, {user?.name}
           </h1>
 
           <p>
@@ -161,8 +375,6 @@ Have a safe and enjoyable journey.
 
         </div>
 
-        
-
       </div>
 
       {/* Statistics */}
@@ -170,28 +382,28 @@ Have a safe and enjoyable journey.
       <div className="stats-grid">
 
         <div className="stat-card">
-          <h4>Trips</h4>
-          <h2>12</h2>
+          <h4>Total Trips</h4>
+          <h2>{dashboard.totalTrips}</h2>
         </div>
 
         <div className="stat-card">
-          <h4>Destinations</h4>
-          <h2>18</h2>
+          <h4>Total Destinations</h4>
+          <h2>{dashboard.totalDestinations}</h2>
         </div>
 
         <div className="stat-card">
-          <h4>Hotels</h4>
-          <h2>9</h2>
+          <h4>Unique Destinations</h4>
+          <h2>{dashboard.uniqueDestinations}</h2>
         </div>
 
         <div className="stat-card">
-          <h4>Total Budget</h4>
-          <h2>Rs. 85,000</h2>
+          <h4>Upcoming Trips</h4>
+          <h2>{dashboard.upcomingTrips}</h2>
         </div>
 
       </div>
 
-      {/* Main Content */}
+      {/* Main */}
 
       <div className="dashboard-main">
 
@@ -203,280 +415,398 @@ Have a safe and enjoyable journey.
 
           <div className="planner-grid">
 
-            <input
-              type="text"
+            {/* Destination */}
+
+            <Select
               name="destination"
-              placeholder="Destination"
-              value={trip.destination}
-              onChange={handleChange}
+              options={destinationOptions}
+              value={
+                destinationOptions.find(
+                  (option) => option.value === Number(trip.destination)
+                ) || null
+              }
+              onChange={(selectedOption) =>
+                setTrip({
+                  ...trip,
+                  destination: selectedOption
+                    ? selectedOption.value
+                    : "",
+                })
+              }
+              placeholder="Search Destination..."
+              isSearchable={true}
+              maxMenuHeight={180}
             />
+
+            {/* Start Date */}
 
             <input
               type="date"
               name="startDate"
               value={trip.startDate}
-              onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
+              onChange={handleStartDateChange}
             />
 
             <input
               type="date"
               name="endDate"
               value={trip.endDate}
-              onChange={handleChange}
+              min={trip.startDate}
+              onChange={handleEndDateChange}
             />
+
+            {/* Days */}
 
             <input
               type="number"
               name="days"
-              placeholder="Days"
               value={trip.days}
-              onChange={handleChange}
+              placeholder="Days"
+              readOnly
             />
+
+            {/* Budget */}
 
             <input
               type="number"
               name="budget"
-              placeholder="Budget"
+              min="1"
               value={trip.budget}
+              placeholder="Budget"
               onChange={handleChange}
             />
+            {/* Travellers */}
 
             <input
               type="number"
               name="travelers"
-              placeholder="Travelers"
+              min="1"
               value={trip.travelers}
+              placeholder="Travellers"
               onChange={handleChange}
             />
+
+            {/* Travel Type */}
 
             <select
               name="travelType"
               value={trip.travelType}
               onChange={handleChange}
             >
-              <option value="">Travel Type</option>
-              <option>Solo</option>
-              <option>Couple</option>
-              <option>Family</option>
-              <option>Friends</option>
+              <option value="">
+                Travel Type
+              </option>
+
+              <option value="Solo">
+                Solo
+              </option>
+
+              <option value="Couple">
+                Couple
+              </option>
+
+              <option value="Family">
+                Family
+              </option>
+
+              <option value="Friends">
+                Friends
+              </option>
+
             </select>
+
+            {/* Transportation */}
 
             <select
               name="transport"
               value={trip.transport}
               onChange={handleChange}
             >
-              <option value="">Transportation</option>
-              <option>Flight</option>
-              <option>Bus</option>
-              <option>Private Vehicle</option>
+
+              <option value="">
+                Transportation
+              </option>
+
+              <option value="Flight">
+                Flight
+              </option>
+
+              <option value="Bus">
+                Bus
+              </option>
+
+              <option value="Private Vehicle">
+                Private Vehicle
+              </option>
+
             </select>
+
+            {/* Hotel */}
 
             <select
               name="hotel"
               value={trip.hotel}
               onChange={handleChange}
             >
-              <option value="">Hotel Category</option>
-              <option>Budget Hotel</option>
-              <option>3 Star Hotel</option>
-              <option>4 Star Hotel</option>
-              <option>5 Star Hotel</option>
+
+              <option value="">
+                Hotel Category
+              </option>
+
+              <option value="Budget Hotel">
+                Budget Hotel
+              </option>
+
+              <option value="3 Star Hotel">
+                3 Star Hotel
+              </option>
+
+              <option value="4 Star Hotel">
+                4 Star Hotel
+              </option>
+
+              <option value="5 Star Hotel">
+                5 Star Hotel
+              </option>
+
             </select>
 
-           <div className="interest-section full-width">
+            {/* Interests */}
 
-  <label className="interest-title">
-    Select Interests
-  </label>
+            <div className="interest-section full-width">
 
-  <div className="interest-list">
+              <label className="interest-title">
 
-    <label>
-      <input
-        type="checkbox"
-        value="Adventure"
-        checked={trip.interests.includes("Adventure")}
-        onChange={handleInterestChange}
-      />
-      Adventure
-    </label>
+                Select Interests
 
-    <label>
-      <input
-        type="checkbox"
-        value="Nature"
-        checked={trip.interests.includes("Nature")}
-        onChange={handleInterestChange}
-      />
-      Nature
-    </label>
+              </label>
 
-    <label>
-      <input
-        type="checkbox"
-        value="Wildlife"
-        checked={trip.interests.includes("Wildlife")}
-        onChange={handleInterestChange}
-      />
-      Wildlife
-    </label>
+              <div className="interest-list">
 
-    <label>
-      <input
-        type="checkbox"
-        value="Religious"
-        checked={trip.interests.includes("Religious")}
-        onChange={handleInterestChange}
-      />
-      Religious
-    </label>
+                <label>
 
-    <label>
-      <input
-        type="checkbox"
-        value="Cultural"
-        checked={trip.interests.includes("Cultural")}
-        onChange={handleInterestChange}
-      />
-      Cultural
-    </label>
+                  <input
+                    type="checkbox"
+                    value="Adventure"
+                    checked={trip.interests.includes("Adventure")}
+                    onChange={handleInterestChange}
+                  />
 
-    <label>
-      <input
-        type="checkbox"
-        value="Luxury"
-        checked={trip.interests.includes("Luxury")}
-        onChange={handleInterestChange}
-      />
-      Luxury
-    </label>
+                  Adventure
 
-    
+                </label>
 
-  </div>
+                <label>
 
-</div>
+                  <input
+                    type="checkbox"
+                    value="Nature"
+                    checked={trip.interests.includes("Nature")}
+                    onChange={handleInterestChange}
+                  />
+
+                  Nature
+
+                </label>
+
+                <label>
+
+                  <input
+                    type="checkbox"
+                    value="Wildlife"
+                    checked={trip.interests.includes("Wildlife")}
+                    onChange={handleInterestChange}
+                  />
+
+                  Wildlife
+
+                </label>
+
+                <label>
+
+                  <input
+                    type="checkbox"
+                    value="Religious"
+                    checked={trip.interests.includes("Religious")}
+                    onChange={handleInterestChange}
+                  />
+
+                  Religious
+
+                </label>
+
+                <label>
+
+                  <input
+                    type="checkbox"
+                    value="Cultural"
+                    checked={trip.interests.includes("Cultural")}
+                    onChange={handleInterestChange}
+                  />
+
+                  Cultural
+
+                </label>
+
+                <label>
+
+                  <input
+                    type="checkbox"
+                    value="Luxury"
+                    checked={trip.interests.includes("Luxury")}
+                    onChange={handleInterestChange}
+                  />
+
+                  Luxury
+
+                </label>
+
+              </div>
+
+            </div>
 
           </div>
 
           <button
             className="generate-btn"
             onClick={generatePlan}
+            disabled={loading}
           >
-            Generate  Plan
+            {loading ? "Generating..." : "Generate Plan"}
           </button>
 
         </div>
 
-        
+        {/* Right Panel Starts Here */}
 
-        {/* RIGHT PANEL STARTS HERE */}
+        <div className="right-panel">          {/* Popular Destinations */}
 
-<div className="right-panel">
+          <div className="side-card">
 
-  {/* Popular Destinations */}
+            <h2>Popular Destinations</h2>
 
-  <div className="side-card">
+            {destinations.length === 0 ? (
 
-    <h2>Popular Destinations</h2>
+              <p>No destinations available.</p>
 
-    <div className="mini-card">
+            ) : (
 
-      <img
-        src="/pokhara.jpg"
-        alt="Pokhara"
-      />
+              destinations.slice(0, 5).map((destination) => (
 
-      <div>
+                <div
+                  className="mini-card"
+                  key={destination.destinationId}
+                >
 
-        <h4>Pokhara</h4>
+                  <img
+                    src={
+                      destination.imageUrl
+                        ? destination.imageUrl
+                        : "/placeholder.jpg"
+                    }
+                    alt={destination.name}
+                  />
 
-        <p>Lakes & Mountains</p>
+                  <div>
 
-        <span>★★★★★</span>
+                    <h4>{destination.name}</h4>
 
-      </div>
+                    <p>
+                      {destination.city},{" "}
+                      {destination.country}
+                    </p>
 
-    </div>
+                    <span>
+                      Budget: Rs. {destination.averageBudget}
+                    </span>
 
-    <div className="mini-card">
+                  </div>
 
-      <img
-        src="/chitwan.jpg"
-        alt="Chitwan"
-      />
+                </div>
 
-      <div>
+              ))
 
-        <h4>Chitwan</h4>
+            )}
 
-        <p>Jungle Safari</p>
+          </div>
 
-        <span>★★★★☆</span>
-
-      </div>
-
-    </div>
-
-    <div className="mini-card">
-
-      <img
-        src="/mustang.jpg"
-        alt="Mustang"
-      />
-
-      <div>
-
-        <h4>Mustang</h4>
-
-        <p>Himalayan Adventure</p>
-
-        <span>★★★★★</span>
+        </div>
 
       </div>
 
+      {/* Generated Itinerary */}
+
+      {plan && (
+
+        <div className="itinerary-card">
+
+          <h2>Generated Itinerary</h2>
+
+          <div className="trip-summary">
+
+            <p>
+
+              <strong>Destination :</strong>{" "}
+              {plan.destination}
+
+            </p>
+
+            <p>
+
+              <strong>Hotel :</strong>{" "}
+              {plan.hotelName}
+
+            </p>
+
+            <p>
+
+              <strong>Transportation :</strong>{" "}
+              {plan.transportation}
+
+            </p>
+
+            <p>
+
+              <strong>Estimated Budget :</strong>{" "}
+              Rs. {plan.estimatedBudget}
+
+            </p>
+
+          </div>
+
+          <hr />
+
+          {plan.days.map((day) => (
+
+            <div
+              key={day.day}
+              className="day-plan"
+            >
+
+              <h3>Day {day.day}</h3>
+
+              <ul>
+
+                {day.activities.map((activity, index) => (
+
+                  <li key={index}>
+                    {activity}
+                  </li>
+
+                ))}
+
+              </ul>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      )}
+
     </div>
-
-    <div className="mini-card">
-
-      <img
-        src="/lumbini.jpg"
-        alt="Lumbini"
-      />
-
-      <div>
-
-        <h4>Lumbini</h4>
-
-        <p>Birthplace of Buddha</p>
-
-        <span>★★★★☆</span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-</div>
-
-{/* Generated Plan */}
-
-{plan && (
-
-  <div className="itinerary-card">
-
-    <h2>Generated Itinerary</h2>
-
-    <pre>{plan}</pre>
-
-  </div>
-
-)}
-
-</div>
 
   );
 
