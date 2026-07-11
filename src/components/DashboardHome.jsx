@@ -357,7 +357,7 @@ const destinationOptions = destinations.map((destination) => ({
 
   }; return (
 
-    <div className="dashboard-home">
+   <div className="dashboard-home">
 
       {/* Header */}
 
