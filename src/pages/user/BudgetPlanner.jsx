@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Dashboard.css";
+import "./Dashboard/Dashboard.css";
 
 function BudgetPlanner() {
   const [days, setDays] = useState(1);

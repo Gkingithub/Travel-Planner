@@ -1,6 +1,6 @@
 import React from "react";
 import { Link ,NavLink} from "react-router-dom";
-import "./Admin.css";
+import "../pages/Admin/Admin.css";
 import { FaRobot } from "react-icons/fa";
 import {
   FaTachometerAlt,

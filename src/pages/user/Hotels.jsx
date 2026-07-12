@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./Dashboard.css";
-import { getHotelRecommendations } from "../service/hotelService";
+import "./Dashboard/Dashboard.css";
+import { getHotelRecommendations } from "../../service/hotelService";
 
 function Hotels() {
   const [hotels, setHotels] = useState([]);

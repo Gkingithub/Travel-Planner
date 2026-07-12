@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./Dashboard.css";
-import Modal from "./Admin/Modal";
+import "./Dashboard/Dashboard.css";
+import Modal from "../../components/modal";
 
 function Profile({ user }) {
   const [profile, setProfile] = useState({

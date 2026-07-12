@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-import{login} from "../service/authSerive";
+import { login } from "../../../service/authSerive";
+
 function Login() {
   const navigate = useNavigate();
 
@@ -12,48 +13,64 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-const handleSubmit = async (e) => {
+  // Reusable Enter key handler
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const form = e.target.form;
+      const index = Array.prototype.indexOf.call(form, e.target);
+
+      // Move to next input
+      if (form.elements[index + 1]) {
+        form.elements[index + 1].focus();
+      } else {
+        // Submit if it's the last field
+        form.requestSubmit();
+      }
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Login button clicked");
-
     if (!email || !password) {
-        Swal.fire({
-            icon: "error",
-            title: "Missing Fields",
-            text: "Please fill all fields",
-        });
-        return;
+      Swal.fire({
+        icon: "error",
+        title: "Missing Fields",
+        text: "Please fill all fields",
+      });
+      return;
     }
-
-    console.log("Calling login API...");
 
     try {
-        const result = await login(email, password);
-        localStorage.setItem("token", result.data.token);
-        console.log(result);
+      const result = await login(email, password);
 
-        Swal.fire({
-            icon: "success",
-            title: "Login Successful"
-        });
+      localStorage.setItem("token", result.data.token);
 
-        navigate("/dashboard");
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      navigate("/dashboard");
     } catch (error) {
-        console.error(error);
+      console.error(error);
 
-        Swal.fire({
-            icon: "error",
-            title: "Login Failed",
-            text: "Invalid email or password."
-        });
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "Invalid email or password.",
+      });
     }
-};
+  };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Yatriq</h2>
+        <h2>YatriQ</h2>
         <p>Plan your perfect journey</p>
 
         <form onSubmit={handleSubmit}>
@@ -65,6 +82,7 @@ const handleSubmit = async (e) => {
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleEnter}
             />
           </div>
 
@@ -78,6 +96,7 @@ const handleSubmit = async (e) => {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleEnter}
               />
 
               <span
@@ -104,6 +123,5 @@ const handleSubmit = async (e) => {
     </div>
   );
 }
-
 
 export default Login;

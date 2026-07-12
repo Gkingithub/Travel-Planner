@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Recommendation.css";
-import { getRecommendations } from "../service/RecommendationService";
+import { getRecommendations } from "../../../service/RecommendationService";
 function Recommendation() {
   const [preferences, setPreferences] = useState({
     adventure: false,

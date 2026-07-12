@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "./Dashboard.css";
 import Select from "react-select";
-import { getDestinations } from "../service/userDestinationService";
-import { getDashboard } from "../service/dashboardService";
-import { generateItinerary } from "../service/dashboardService";
+import { getDestinations } from "../../../service/userDestinationService";
+import { getDashboard } from "../../../service/dashboardService";
+import { generateItinerary } from "../../../service/dashboardService";
 
 function DashboardHome({ user }) {
   const [dashboard, setDashboard] = useState({
@@ -74,10 +74,10 @@ function DashboardHome({ user }) {
     hotel: "",
     interests: [],
   });
-const destinationOptions = destinations.map((destination) => ({
-  value: destination.destinationId,
-  label: `${destination.name} - ${destination.city}, ${destination.country}`,
-}));
+  const destinationOptions = destinations.map((destination) => ({
+    value: destination.destinationId,
+    label: `${destination.name} - ${destination.city}, ${destination.country}`,
+  }));
   useEffect(() => {
     loadDashboard();
     loadDestinations();
@@ -355,9 +355,50 @@ const destinationOptions = destinations.map((destination) => ({
 
     }
 
-  }; return (
+  };
+  const handleSaveTrip = async () => {
+    if (!plan) {
+      Swal.fire({
+        icon: "warning",
+        title: "No itinerary",
+        text: "Generate an itinerary first."
+      });
+      return;
+    }
 
-   <div className="dashboard-home">
+    const request = {
+      destinationId: Number(trip.destination),
+      travelDate: trip.startDate,
+      days: Number(trip.days),
+      budget: Number(trip.budget),
+      travellers: Number(trip.travelers),
+      transportation: trip.transport,
+      hotelCategory: trip.hotel
+    };
+
+    try {
+      const response = await saveTrip(request);
+
+      if (response.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Trip Saved",
+          text: "Trip has been added to My Trips."
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          "Unable to save trip."
+      });
+    }
+  };
+  return (
+
+    <div className="dashboard-home">
 
       {/* Header */}
 
@@ -736,75 +777,107 @@ const destinationOptions = destinations.map((destination) => ({
       </div>
 
       {/* Generated Itinerary */}
+{/* Generated Itinerary */}
 
-      {plan && (
+{plan && (
 
-        <div className="itinerary-card">
+  <div className="itinerary-card">
 
-          <h2>Generated Itinerary</h2>
+    <div className="itinerary-header">
 
-          <div className="trip-summary">
+      <h2>✈ Your Travel Itinerary</h2>
 
-            <p>
+      <p>Your personalized travel plan is ready.</p>
 
-              <strong>Destination :</strong>{" "}
-              {plan.destination}
+    </div>
 
-            </p>
+    <div className="summary-grid">
 
-            <p>
+      <div className="summary-box">
 
-              <strong>Hotel :</strong>{" "}
-              {plan.hotelName}
+        <span>📍 Destination</span>
 
-            </p>
+        <h3>{plan.destination}</h3>
 
-            <p>
+      </div>
 
-              <strong>Transportation :</strong>{" "}
-              {plan.transportation}
+      <div className="summary-box">
 
-            </p>
+        <span>🏨 Hotel</span>
 
-            <p>
+        <h3>{plan.hotelName}</h3>
 
-              <strong>Estimated Budget :</strong>{" "}
-              Rs. {plan.estimatedBudget}
+      </div>
 
-            </p>
+      <div className="summary-box">
+
+        <span>🚗 Transportation</span>
+
+        <h3>{plan.transportation}</h3>
+
+      </div>
+
+      <div className="summary-box">
+
+        <span>💰 Estimated Budget</span>
+
+        <h3>Rs. {plan.estimatedBudget}</h3>
+
+      </div>
+
+    </div>
+
+    <div className="timeline">
+
+      {plan.days.map((day) => (
+
+        <div
+          className="timeline-card"
+          key={day.day}
+        >
+
+          <div className="timeline-number">
+
+            Day {day.day}
 
           </div>
 
-          <hr />
+          <div className="timeline-content">
 
-          {plan.days.map((day) => (
+            <ul>
 
-            <div
-              key={day.day}
-              className="day-plan"
-            >
+              {day.activities.map((activity, index) => (
 
-              <h3>Day {day.day}</h3>
+                <li key={index}>
+                  ✅ {activity}
+                </li>
 
-              <ul>
+              ))}
 
-                {day.activities.map((activity, index) => (
+            </ul>
 
-                  <li key={index}>
-                    {activity}
-                  </li>
-
-                ))}
-
-              </ul>
-
-            </div>
-
-          ))}
+          </div>
 
         </div>
 
-      )}
+      ))}
+
+    </div>
+
+    <div className="save-trip-container">
+
+      <button
+        className="save-trip-btn"
+        onClick={handleSaveTrip}
+      >
+        💾 Save Trip
+      </button>
+
+    </div>
+
+  </div>
+
+)}
 
     </div>
 

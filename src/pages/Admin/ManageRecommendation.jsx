@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import "./Admin.css";
-import AdminSidebar from "./AdminSidebar";
-import Modal from "./Modal";
+import AdminSidebar from "../../components/AdminSidebar";
+import Modal from "../../components/modal";
 
 import {
   getDestinationFeatures,

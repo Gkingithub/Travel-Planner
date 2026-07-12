@@ -1,6 +1,6 @@
 import React from "react";
 import "./Admin.css";
-import AdminSidebar from "./AdminSidebar";
+import AdminSidebar from "../../components/AdminSidebar";
 
 function AdminDashboard() {
   return (

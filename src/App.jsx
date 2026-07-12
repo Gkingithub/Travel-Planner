@@ -1,17 +1,19 @@
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Dashboard from "./components/Dashboard";
-import AdminDashboard from "./components/Admin/AdminDashboard";
-import ManageUsers from "./components/Admin/ManageUsers";
-import ManageTrips from "./components/Admin/ManageTrips";
-import ManageHotels from "./components/Admin/ManageHotels";
-import ManageActivities from "./components/Admin/ManageActivities";
-import Recommendation from "./components/Recommendation";
-import ManageRecommendations from "./components/Admin/ManageRecommendation";
+import Home from "./pages/user/Home/Home";
+import Login from "./pages/user/Login/Login";
+import Register from "./pages/user/Register/Register";
+import Dashboard from "./pages/user/Dashboard/Dashboard";
+import DashboardHome from "./pages/user/Dashboard/DashboardHome";
+import Recommendation from "./pages/user/Recommendation/Recommendation";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import ManageUsers from "./pages/Admin/ManageUsers";
+import ManageTrips from "./pages/Admin/ManageTrips";
+import ManageHotels from "./pages/Admin/ManageHotels";
+import ManageActivities from "./pages/Admin/ManageActivities";
+import ManageRecommendations from "./pages/Admin/ManageRecommendation";
+import AdminLogin from "./pages/Admin/AdminLogin";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AdminLogin from "./components/Admin/AdminLogin";
+
 
 function App() {
   return (

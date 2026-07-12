@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import Sidebar from "./Sidebar";
+import Sidebar from "../../../components/Sidebar";
 import DashboardHome from "./DashboardHome";
-import MyTrips from "./MyTrips";
-import Destinations from "./Destinations";
-import Hotels from "./Hotels";
-import BudgetPlanner from "./BudgetPlanner";
-import Profile from "./Profile";
-import Recommendation from "./Recommendation";
+import MyTrips from "../MyTrips";
+import Destinations from "../Destinations";
+import Hotels from "../Hotels";
+import BudgetPlanner from "../BudgetPlanner";
+import Profile from "../Profile";
+import Recommendation from "../Recommendation/Recommendation";
 
 import { Link } from "react-router-dom";
 import "./Dashboard.css";

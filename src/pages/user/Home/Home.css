@@ -25,7 +25,12 @@
 .logo h2{
     margin:0;
     color:var(--primary);
-    font-size:30px;
+   
+
+    font-family: 'Pacifico', cursive;
+    font-size: 3rem; 
+    
+    
     
 }
 .logo h3{
@@ -62,33 +67,37 @@
     
 }
 
-.nav-links{
-    display:flex;
-    align-items:center;
-    gap:20px;
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
-
-.nav-links a{
-    text-decoration:none;
-    color:var(--text);
-    font-size:16px;
-    transition:var(--transition);
+.nav-links a {
+    text-decoration: none;
+    color: var(--text);
+    font-size: 20px;       /* Increased from 16px */
+    font-weight: 600;
+    transition: var(--transition);
 }
 
-.nav-links a:hover{
-    color:var(--primary);
+.nav-links a:hover {
+    color: var(--primary);
 }
 
 .login-btn,
-.register-btn{
-    width:120px;
-    padding:10px;
-    border-radius:var(--radius);
-    font-size:15px;
-    cursor:pointer;
-    transition:var(--transition);
+.register-btn {
+    width: 145px;          /* Increased from 120px */
+    padding: 14px 20px;    /* Increased padding */
+    border-radius: var(--radius);
+    font-size: 18px;       /* Increased from 15px */
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
 }
+
+
+
 
 .login-btn{
     background:transparent;
@@ -241,7 +250,7 @@
     margin:80px auto;
 }
 
-.destination-section h2{
+.destination-section h1{
     text-align:center;
     color:var(--primary);
     margin-bottom:40px;
@@ -272,13 +281,13 @@
 }
 
 .destination-card h3{
-    margin:20px 20px 10px;
+    margin:30px 30px 10px;
 }
 
 .destination-card p{
     margin:0 20px;
     color:var(--text-light);
-    line-height:1.6;
+    line-height:1.8;
 }
 
 .destination-card span{
@@ -349,3 +358,153 @@
     }
 
 }
+
+.statistics {
+  background: #fffaf8;
+  padding: 90px 0;
+}
+
+.statistics-heading {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.statistics-heading h3 {
+  font-size: 2.8rem;
+  color: var(--primary);
+  margin-bottom: 15px;
+  font-family: "Cormorant Garamond", serif;
+}
+
+.statistics-heading p {
+  max-width: 650px;
+  margin: auto;
+  color: #666;
+  line-height: 1.8;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.stat-card {
+  background: white;
+  padding: 40px 20px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.05);
+  transition: 0.35s;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+}
+
+.stat-card h3 {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 10px;
+  font-family: "Cormorant Garamond", serif;
+}
+
+.stat-card span {
+  color: #666;
+  font-weight: 500;
+}
+
+/* Footer */
+
+.footer {
+    background: linear-gradient( #1d4ed8);
+    color: #fff;
+    padding: 50px 10% 20px;
+    margin-top: 60px;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+}
+
+
+
+
+.footer-logo {
+    font-size: 32px;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.footer-section h2,
+.footer-section h3 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-section p {
+    font-size: 18px;
+    line-height: 2;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 12px;
+}
+
+.footer-section ul li a {
+    text-decoration: none;
+    color: #d1d5db;
+    transition: 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: #60a5fa;
+    padding-left: 6px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-icons a {
+    width: 42px;
+    height: 42px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    background: #3b82f6;
+    transform: translateY(-5px);
+}
+
+.footer hr {
+    border: none;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+    margin: 35px 0 20px;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
