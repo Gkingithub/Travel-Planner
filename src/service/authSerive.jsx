@@ -1,8 +1,22 @@
 import api from "./api";
-export const login=async (email, password) => {
-     console.log("Inside authService");
+export const login = async (email, password) => {
+    const response = await api.post("/auth/login", {
+        email,
+        password,
+    });
 
-    const response=await api.post('/auth/login', {email, password});
+    console.log(response.data);
+
+    localStorage.setItem(
+        "token",
+        response.data.data.token
+    );
+
+    localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.data.user)
+    );
+
     return response.data;
 };
 export const register = async (fullName, email, password) => {
@@ -10,15 +24,15 @@ export const register = async (fullName, email, password) => {
         fullName,
         email,
         password
- 
+
     });
 
     return response.data;
 };
-export const loginAdmin=async (email, password) => {
-    const response = await api.post('/auth/loginAdmin', {email, password});
+export const loginAdmin = async (email, password) => {
+    const response = await api.post('/auth/loginAdmin', { email, password });
     return response.data;
 };
-export const logout=()=>{
+export const logout = () => {
     localStorage.removeItem('token');
 };

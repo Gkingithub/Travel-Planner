@@ -79,10 +79,6 @@ function Dashboard() {
          {active === "recommendation" && (
           <Recommendation />
         )}
-
-
-        
-
       </div>
 
     </div>

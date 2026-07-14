@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "./Dashboard.css";
 import Select from "react-select";
-import { getDestinations } from "../../../service/userDestinationService";
-import { getDashboard } from "../../../service/dashboardService";
-import { generateItinerary } from "../../../service/dashboardService";
-import { saveTrip } from "../../../service/tripService";
-const user = JSON.parse(localStorage.getItem("user"));
-const userName = user?.fullName;
-function DashboardHome() {
+import { getDestinations } from "../service/userDestinationService";
+import { getDashboard } from "../service/dashboardService";
+import { generateItinerary } from "../service/dashboardService";
+import { saveTrip } from "../service/tripService";
+function DashboardHome({ user }) {
   const [dashboard, setDashboard] = useState({
     totalTrips: 0,
     totalDestinations: 0,
@@ -408,18 +406,13 @@ function DashboardHome() {
 
         <div>
 
-          <div className="dashboard-header">
-            <div className="profile-section">
+          <h1>
+            Welcome, {user?.name}
+          </h1>
 
-
-              <div className="profile-info">
-                <h2>Welcome, {userName}</h2>
-              
-              </div>
-
-            </div>
-          </div>
-
+          <p>
+            Plan your next journey with Yatriq
+          </p>
 
         </div>
 
@@ -748,10 +741,9 @@ function DashboardHome() {
                 >
 
                   <img
-
                     src={
                       destination.imageUrl
-                        ? `http://localhost:5055${destination.imageUrl}`
+                        ? destination.imageUrl
                         : "/placeholder.jpg"
                     }
                     alt={destination.name}
@@ -785,104 +777,79 @@ function DashboardHome() {
       </div>
 
       {/* Generated Itinerary */}
-      {/* Generated Itinerary */}
 
       {plan && (
 
         <div className="itinerary-card">
 
-          <div className="itinerary-header">
+          <h2>Generated Itinerary</h2>
 
-            <h2>✈ Your Travel Itinerary</h2>
+          <div className="trip-summary">
 
-            <p>Your personalized travel plan is ready.</p>
+            <p>
 
-          </div>
+              <strong>Destination :</strong>{" "}
+              {plan.destination}
 
-          <div className="summary-grid">
+            </p>
 
-            <div className="summary-box">
+            <p>
 
-              <span>📍 Destination</span>
+              <strong>Hotel :</strong>{" "}
+              {plan.hotelName}
 
-              <h3>{plan.destination}</h3>
+            </p>
 
-            </div>
+            <p>
 
-            <div className="summary-box">
+              <strong>Transportation :</strong>{" "}
+              {plan.transportation}
 
-              <span>🏨 Hotel</span>
+            </p>
 
-              <h3>{plan.hotelName}</h3>
+            <p>
 
-            </div>
+              <strong>Estimated Budget :</strong>{" "}
+              Rs. {plan.estimatedBudget}
 
-            <div className="summary-box">
-
-              <span>🚗 Transportation</span>
-
-              <h3>{plan.transportation}</h3>
-
-            </div>
-
-            <div className="summary-box">
-
-              <span>💰 Estimated Budget</span>
-
-              <h3>Rs. {plan.estimatedBudget}</h3>
-
-            </div>
+            </p>
 
           </div>
 
-          <div className="timeline">
+          <hr />
 
-            {plan.days.map((day) => (
+          {plan.days.map((day) => (
 
-              <div
-                className="timeline-card"
-                key={day.day}
-              >
+            <div
+              key={day.day}
+              className="day-plan"
+            >
 
-                <div className="timeline-number">
+              <h3>Day {day.day}</h3>
 
-                  Day {day.day}
+              <ul>
 
-                </div>
+                {day.activities.map((activity, index) => (
 
-                <div className="timeline-content">
+                  <li key={index}>
+                    {activity}
+                  </li>
 
-                  <ul>
+                ))}
 
-                    {day.activities.map((activity, index) => (
+              </ul>
 
-                      <li key={index}>
-                        ✅ {activity}
-                      </li>
+            </div>
 
-                    ))}
-
-                  </ul>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
+          ))}
           <div className="save-trip-container">
-
             <button
               className="save-trip-btn"
               onClick={handleSaveTrip}
             >
-               Save Trip
+              💾 Save Trip
             </button>
-
           </div>
-
         </div>
 
       )}
