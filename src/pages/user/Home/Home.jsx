@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "./Home.css";
-
+import { getRandomDestinations } from "../../../service/randomDestinationService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMapLocationDot,
+  faRoute,
+  faWallet,
+  faHotel,
+} from "@fortawesome/free-solid-svg-icons";
 function Home() {
   const navigate = useNavigate();
+
+  const [destinations, setDestinations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleDashboardClick = () => {
     const token = localStorage.getItem("token");
@@ -15,7 +25,7 @@ function Home() {
       Swal.fire({
         icon: "warning",
         title: "Login Required",
-        text: "Please login to access the dashboard.",
+        text: "Please login to access your dashboard.",
         confirmButtonText: "Login",
       }).then((result) => {
         if (result.isConfirmed) {
@@ -25,33 +35,35 @@ function Home() {
     }
   };
 
-  const [destinations, setDestinations] = useState([]);
-
   useEffect(() => {
     loadPopularDestinations();
   }, []);
 
   const loadPopularDestinations = async () => {
-
     try {
-
       const response = await getRandomDestinations();
+
+      console.log(response);
 
       if (response.success) {
         setDestinations(response.data);
       }
-
     } catch (error) {
+      console.error(error);
 
-      console.log(error);
-
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Failed to load destinations.",
+      });
+    } finally {
+      setLoading(false);
     }
-
   };
 
   return (
     <div className="home">
-      {/* Navigation */}
+      {/* ================= NAVBAR ================= */}
 
       <nav className="navbar">
         <div className="logo">
@@ -71,6 +83,10 @@ function Home() {
 
           <a href="#destinations">Destinations</a>
 
+          <a href="#statistics">Statistics</a>
+
+          <a href="#footer">Contact</a>
+
           <Link to="/login">
             <button className="login-btn">Login</button>
           </Link>
@@ -81,20 +97,21 @@ function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* ================= HERO SECTION ================= */}
 
       <div className="banner">
         <section className="hero" id="home">
           <div className="hero-content">
             <h1>
-              Plan With us
+              Plan Smarter,
               <br />
-              Travel Better
+              Travel Better.
             </h1>
 
             <p>
-              Create personalized travel itineraries. Discover destinations,
-              estimate your budget, and organize your journey.
+              Discover Nepal's most beautiful destinations, create personalized
+              itineraries, estimate your travel budget, and enjoy hassle-free
+              adventures with YatriQ.
             </p>
 
             <div className="hero-buttons">
@@ -105,79 +122,152 @@ function Home() {
               </Link>
 
               <Link to="/login">
-                <button className="secondary-btn">Login</button>
+                <button className="secondary-btn">
+                  Login
+                </button>
               </Link>
             </div>
           </div>
         </section>
       </div>
 
-      {/* Popular Destinations */}
+      {/* ================= POPULAR DESTINATIONS ================= */}
 
       <section className="destination-section" id="destinations">
-        <h1>Popular Destinations</h1>
+        <div className="section-heading">
+          <h1>Popular Destinations</h1>
 
-        <div className="destination-grid">
-          <div className="destination-card">
-            <img src="/pokhara.jpg" alt="Pokhara" />
-
-            <h3>Pokhara</h3>
-
-            <p>Lakes, mountains and adventure.</p>
-
-            <span>Estimated Budget</span>
-
-            <h4>Rs. 12,000</h4>
-          </div>
-
-          <div className="destination-card">
-            <img src="/chitwan.jpg" alt="Chitwan" />
-
-            <h3>Chitwan</h3>
-
-            <p>Wildlife and jungle safari.</p>
-
-            <span>Estimated Budget</span>
-
-            <h4>Rs. 15,000</h4>
-          </div>
-
-          <div className="destination-card">
-            <img src="/mustang.jpg" alt="Mustang" />
-
-            <h3>Mustang</h3>
-
-            <p>Beautiful Himalayan landscapes.</p>
-
-            <span>Estimated Budget</span>
-
-            <h4>Rs. 25,000</h4>
-          </div>
-
-          <div className="destination-card">
-            <img src="/lumbini.jpg" alt="Lumbini" />
-
-            <h3>Lumbini</h3>
-
-            <p>Birthplace of Lord Buddha.</p>
-
-            <span>Estimated Budget</span>
-
-            <h4>Rs. 10,000</h4>
-          </div>
+          <p style={{ marginBottom: "35px" }}>
+            Explore some of Nepal's most loved travel destinations recommended
+            by YatriQ.
+          </p>
         </div>
+
+        {loading ? (
+          <div className="loading-container">
+            <h3>Loading destinations...</h3>
+          </div>
+        ) : (
+          <div className="destination-grid">
+            {destinations.length > 0 ? (
+              destinations.map((destination) => (
+                <div
+                  className="destination-card"
+                  key={destination.destinationId}
+                >
+                  <img
+                    src={
+                      destination.imageUrl
+                        ? destination.imageUrl
+                        : "/placeholder.jpg"
+                    }
+                    alt={destination.name}
+                  />
+
+                  <div className="destination-content">
+                    <h3>{destination.name}</h3>
+
+                    <p>
+                      {destination.description
+                        ? destination.description
+                        : "Discover this amazing destination with YatriQ."}
+                    </p>
+
+                    <span>Estimated Budget</span>
+
+                    <h4>
+                      Rs.{" "}
+                      {destination.averageBudget
+                        ? Number(destination.averageBudget).toLocaleString()
+                        : "N/A"}
+                    </h4>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-destination">
+                <h3>No destinations available.</h3>
+              </div>
+            )}
+          </div>
+        )}
       </section>
+{/* ================= WHY CHOOSE YATRIQ ================= */}
 
-      {/* Statistics */}
 
-      <section className="statistics">
+
+<section className="features-section">
+  <div className="section-heading">
+    <h1>Why Choose YatriQ?</h1>
+
+    <p style={{ marginBottom: "35px", marginTop: "10px" }}>
+      Experience smarter travel planning with AI-powered recommendations and
+      personalized itineraries.
+    </p>
+  </div>
+
+  <div className="features-grid">
+
+    <div className="feature-card">
+      <div className="feature-icon">
+        <FontAwesomeIcon icon={faMapLocationDot} />
+      </div>
+
+      <h3>Destination Recommendations</h3>
+
+      <p>
+        Discover destinations based on your interests, travel style and budget.
+      </p>
+    </div>
+
+    <div className="feature-card">
+      <div className="feature-icon">
+        <FontAwesomeIcon icon={faRoute} />
+      </div>
+
+      <h3>Smart Itinerary</h3>
+
+      <p>
+        Automatically generate complete travel plans within seconds.
+      </p>
+    </div>
+
+    <div className="feature-card">
+      <div className="feature-icon">
+        <FontAwesomeIcon icon={faWallet} />
+      </div>
+
+      <h3>Budget Planner</h3>
+
+      <p>
+        Estimate your travel expenses before you start your journey.
+      </p>
+    </div>
+
+    <div className="feature-card">
+      <div className="feature-icon">
+        <FontAwesomeIcon icon={faHotel} />
+      </div>
+
+      <h3>Hotel Suggestions</h3>
+
+      <p>
+        Find comfortable hotels that perfectly fit your travel budget.
+      </p>
+    </div>
+
+  </div>
+</section>
+      {/* ================= STATISTICS ================= */}
+
+      <section className="statistics" id="statistics">
         <div className="container">
           <div className="statistics-heading">
-            <h3>Trusted Across Nepal</h3>
+            <h2>Trusted Across Nepal</h2>
 
             <p>
-              Helping travelers discover destinations, plan memorable journeys,
-              and explore Nepal with confidence.
+              Thousands of travelers use YatriQ to discover destinations, plan
+              trips, and create unforgettable travel memories.
             </p>
           </div>
 
@@ -188,13 +278,13 @@ function Home() {
             </div>
 
             <div className="stat-card">
-              <h3>350+</h3>
+              <h3>500+</h3>
               <span>Travel Plans</span>
             </div>
 
             <div className="stat-card">
-              <h3>7</h3>
-              <span>Activities</span>
+              <h3>250+</h3>
+              <span>Hotels</span>
             </div>
 
             <div className="stat-card">
@@ -204,60 +294,38 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-section">
             <h2 className="footer-logo">YatriQ</h2>
-
-            <p>
-              Discover Nepal with ease. YatriQ helps you plan trips, explore
-              destinations, manage budgets, and create unforgettable travel
-              experiences.
-            </p>
-          </div>
-
-          <div className="footer-section">
+            <p> Discover Nepal with ease. YatriQ helps you plan trips, explore destinations, manage budgets, and create unforgettable travel experiences. </p>
+          </div> <div className="footer-section">
             <h2>Contact Us</h2>
-
             <p>support@yatriq.com</p>
-
             <p>+977-9860000000</p>
-
             <p>Kathmandu, Nepal</p>
           </div>
-
           <div className="footer-section">
             <h3>Follow Us</h3>
-
             <div className="social-icons">
               <a href="#">
                 <i className="fab fa-facebook-f"></i>
               </a>
-
-              <a href="#">
-                <i className="fab fa-instagram"></i>
-              </a>
-
-              <a href="#">
+              <a href="#"> <i className="fab fa-instagram"></i>
+              </a> <a href="#">
                 <i className="fab fa-twitter"></i>
-              </a>
-
-              <a href="#">
+              </a> <a href="#">
                 <i className="fab fa-youtube"></i>
               </a>
             </div>
           </div>
         </div>
-
         <hr />
-
         <div className="footer-bottom">
           <p>© 2026 YatriQ. All Rights Reserved.</p>
         </div>
       </footer>
+
     </div>
   );
 }
