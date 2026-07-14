@@ -406,3 +406,26 @@ tr:hover {
 .menu-icon {
   font-size: 20px;
 }
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    width:100%;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.form-group textarea{
+    width:100%;
+    min-height:120px;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    resize:vertical;
+    box-sizing:border-box;
+}

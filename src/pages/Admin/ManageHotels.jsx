@@ -283,17 +283,22 @@ function ManageHotels() {
               }
             />
 
-            <label>Facilities</label>
-            <textarea
-              rows="4"
-              value={editingHotel.facilities}
-              onChange={(e) =>
-                setEditingHotel({
-                  ...editingHotel,
-                  facilities: e.target.value,
-                })
-              }
-            />
+            <div className="form-group">
+  <label htmlFor="facilities">Facilities</label>
+
+  <textarea
+         id="facilities"
+        rows="4"
+          placeholder="Enter hotel facilities"
+         value={editingHotel.facilities}
+         onChange={(e) =>
+         setEditingHotel({
+        ...editingHotel,
+        facilities: e.target.value,
+      })
+    }
+  />
+</div>
 
             <label>Hotel Image</label>
             <input

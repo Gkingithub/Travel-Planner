@@ -259,8 +259,7 @@ function ManageDestination() {
                   src={`http://localhost:5055${editingDestination.imageUrl}`}
                   alt="Destination"
                   width="120"
-                  style={{
-                    marginTop: "10px",
+                  style={{marginTop: "10px",
                     borderRadius: "6px",
                   }}
                 />

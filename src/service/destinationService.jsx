@@ -6,19 +6,14 @@ export const getDestinations = async () => {
 };
 
 export const createDestination = async (destination) => {
-  const formData = new FormData();
-
-  formData.append("Name", destination.name);
-  formData.append("City", destination.city);
-  formData.append("Country", destination.country);
-  formData.append("Description", destination.description);
-  formData.append("AverageBudget", destination.averageBudget);
-
-  if (destination.imageUrl) {
-    formData.append("Image", destination.imageUrl);
-  }
-
-  const response = await api.post("/Destination", formData);
+  const response = await api.post("/Destination", {
+    name: destination.name,
+    city: destination.city,
+    country: destination.country,
+    description: destination.description,
+    averageBudget: destination.averageBudget,
+    imageUrl: destination.imageUrl,
+  });
 
   return response.data;
 };
