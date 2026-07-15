@@ -186,13 +186,13 @@ function DashboardHome() {
       !trip.budget ||
       !trip.travelers ||
       !trip.transport ||
-      !trip.hotel
+      !trip.hotel ||
+      !trip.travelType
     ) {
-
       Swal.fire({
         icon: "warning",
         title: "Missing Information",
-        text: "Please complete all required fields.",
+        text: "Please complete all required fields."
       });
 
       return;
@@ -320,6 +320,7 @@ function DashboardHome() {
 
       nightLife: 0,
 
+      travelType: trip.travelType,
     };
 
     try {
@@ -375,7 +376,15 @@ function DashboardHome() {
       budget: Number(trip.budget),
       travellers: Number(trip.travelers),
       transportation: trip.transport,
-      hotelCategory: trip.hotel
+      hotelCategory: trip.hotel,
+      travelType: trip.travelType,
+      itineraries: plan.days.map(day => ({
+        dayNumber: day.day,
+        morning: day.activities[0] || "",
+        afternoon: day.activities[1] || "",
+        evening: day.activities[2] || "",
+        estimatedCost: day.estimatedCost || 0
+      }))
     };
 
     try {
@@ -401,7 +410,6 @@ function DashboardHome() {
   return (
 
     <div className="dashboard-home">
-
       {/* Header */}
 
       <div className="dashboard-header">
@@ -414,7 +422,7 @@ function DashboardHome() {
 
               <div className="profile-info">
                 <h2>Welcome, {userName}</h2>
-              
+
               </div>
 
             </div>
@@ -803,7 +811,7 @@ function DashboardHome() {
 
             <div className="summary-box">
 
-              <span>📍 Destination</span>
+              <span> Destination</span>
 
               <h3>{plan.destination}</h3>
 
@@ -811,7 +819,7 @@ function DashboardHome() {
 
             <div className="summary-box">
 
-              <span>🏨 Hotel</span>
+              <span>Hotel</span>
 
               <h3>{plan.hotelName}</h3>
 
@@ -819,7 +827,7 @@ function DashboardHome() {
 
             <div className="summary-box">
 
-              <span>🚗 Transportation</span>
+              <span>Transportation</span>
 
               <h3>{plan.transportation}</h3>
 
@@ -878,7 +886,7 @@ function DashboardHome() {
               className="save-trip-btn"
               onClick={handleSaveTrip}
             >
-               Save Trip
+              Save Trip
             </button>
 
           </div>

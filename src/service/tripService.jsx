@@ -24,6 +24,11 @@ export const getMyTrips = async () => {
   }
 };
 export const getTripDetails = async (tripId) => {
-    const response = await api.get(`/trip/${tripId}`);
+    const response = await api.get(`/Trip/${tripId}`);
     return response.data;
 };
+export const completeTrip = (id) =>
+    api.put(`/Trip/${id}/complete`);
+
+export const deleteTrip = (id) =>
+    api.delete(`/Trip/${id}`);

@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "./Dashboard/Dashboard.css";
-import { getMyTrips, getTripDetails } from "../../service/tripService";
+
+import {
+  getMyTrips,
+  getTripDetails,
+  completeTrip,
+  deleteTrip
+} from "../../service/tripService";
+
 
 function MyTrips() {
 
@@ -26,15 +33,17 @@ function MyTrips() {
         setTrips(response.data);
       }
       else {
+
         Swal.fire(
           "Error",
           response.message,
           "error"
         );
+
       }
 
     }
-    catch(error){
+    catch (error) {
 
       Swal.fire(
         "Error",
@@ -43,112 +52,166 @@ function MyTrips() {
       );
 
     }
-    finally{
+    finally {
+
       setLoading(false);
+
     }
 
   };
 
 
-  const handleView = async(tripId)=>{
 
-    try{
+  // ============================
+  // VIEW DETAILS
+  // ============================
+
+  const handleView = async (tripId) => {
+
+    try {
 
       const response = await getTripDetails(tripId);
 
 
-      if(response.success){
+      if (!response.success) {
 
-        const trip = response.data;
+        Swal.fire(
+          "Error",
+          response.message,
+          "error"
+        );
+
+        return;
+      }
 
 
-        let itineraryHTML = "";
+      const trip = response.data;
 
 
-        trip.itineraries.forEach(day=>{
+      let itineraryHTML = "";
+
+
+      if (trip.itineraries && trip.itineraries.length > 0) {
+
+
+        trip.itineraries.forEach(day => {
+
 
           itineraryHTML += `
-          
+
           <div style="
-             text-align:left;
-             margin-bottom:15px;
-             padding:10px;
-             border-bottom:1px solid #ddd;
-          ">
+          text-align:left;
+          padding:12px;
+          border-bottom:1px solid #ddd;
+          margin-bottom:10px;">
 
-          <h4>Day ${day.dayNumber}</h4>
+
+          <h4>
+          Day ${day.dayNumber}
+          </h4>
+
 
           <p>
-          🌅 Morning:
-          ${day.morning}
+          <strong>Morning:</strong>
+          ${day.morning || "-"}
           </p>
 
-          <p>
-          ☀️ Afternoon:
-          ${day.afternoon}
-          </p>
 
           <p>
-          🌙 Evening:
-          ${day.evening}
+          <strong>Afternoon:</strong>
+          ${day.afternoon || "-"}
           </p>
 
+
           <p>
-          💰 Cost:
+          <strong>Evening:</strong>
+          ${day.evening || "-"}
+          </p>
+
+
+          <p>
+          <strong>Estimated Cost:</strong>
           Rs. ${day.estimatedCost}
           </p>
+
 
           </div>
 
           `;
 
-        });
-
-
-        Swal.fire({
-
-          title: `${trip.destinationName} Trip`,
-
-          html:`
-
-          <p>
-          📅 Date:
-          ${new Date(trip.travelDate).toLocaleDateString()}
-          </p>
-
-          <p>
-          👥 Travellers:
-          ${trip.travellers}
-          </p>
-
-          <p>
-          🚗 Transport:
-          ${trip.transportation}
-          </p>
-
-          <p>
-          🏨 Hotel:
-          ${trip.hotelCategory}
-          </p>
-
-          <hr/>
-
-          ${itineraryHTML}
-
-          `,
-
-          width:"700px",
-
-          confirmButtonText:"Close"
 
         });
 
 
       }
+      else {
+
+        itineraryHTML =
+          "<p>No itinerary found.</p>";
+
+      }
+
+
+
+      Swal.fire({
+
+        title:
+          `${trip.destination?.name} Trip`,
+
+
+        width: "700px",
+
+
+        html: `
+
+        <p>
+        <strong>Date:</strong>
+        ${new Date(trip.travelDate)
+            .toLocaleDateString()}
+        </p>
+
+
+        <p>
+        <strong>Status:</strong>
+        ${trip.status}
+        </p>
+
+
+        <p>
+        <strong>Travellers:</strong>
+        ${trip.travellers}
+        </p>
+
+
+        <p>
+        <strong>Transportation:</strong>
+        ${trip.transportation}
+        </p>
+
+
+        <p>
+        <strong>Hotel:</strong>
+        ${trip.hotelCategory}
+        </p>
+
+
+        <hr>
+
+
+        ${itineraryHTML}
+
+        `,
+
+
+        confirmButtonText: "Close"
+
+      });
 
 
     }
-    catch(error){
+    catch (error) {
+
+      console.log(error);
 
       Swal.fire(
         "Error",
@@ -162,35 +225,149 @@ function MyTrips() {
 
 
 
-  const handleCancel=(tripId)=>{
 
-    Swal.fire({
 
-      title:"Cancel Trip?",
+  // ============================
+  // COMPLETE TRIP
+  // ============================
 
-      text:"Are you sure you want to cancel this trip?",
+  const handleComplete = async (tripId) => {
 
-      icon:"warning",
 
-      showCancelButton:true,
+    const result = await Swal.fire({
 
-      confirmButtonText:"Yes, Cancel"
+      title: "Complete Trip?",
 
-    }).then((result)=>{
+      text: "Mark this trip as completed?",
 
-      if(result.isConfirmed){
+      icon: "question",
 
-        Swal.fire(
-          "Cancelled",
-          "Trip cancellation API can be connected here.",
-          "success"
-        );
+      showCancelButton: true,
 
-      }
+      confirmButtonText: "Yes, Complete"
 
     });
 
+
+
+    if (!result.isConfirmed)
+      return;
+
+
+
+    try {
+
+
+      const response =
+        await completeTrip(tripId);
+
+
+
+      if (response.success) {
+
+
+        Swal.fire(
+          "Completed",
+          "Trip marked as completed.",
+          "success"
+        );
+
+
+        loadTrips();
+
+
+      }
+
+
+    }
+    catch (error) {
+
+
+      Swal.fire(
+        "Error",
+        "Unable to update trip.",
+        "error"
+      );
+
+
+    }
+
+
   };
+
+
+
+
+
+  // ============================
+  // DELETE / CANCEL TRIP
+  // ============================
+
+  const handleCancel = async (tripId) => {
+
+
+    const result = await Swal.fire({
+
+      title: "Cancel Trip?",
+
+      text: "This will delete the trip permanently.",
+
+      icon: "warning",
+
+      showCancelButton: true,
+
+      confirmButtonText: "Yes, Delete"
+
+    });
+
+
+
+    if (!result.isConfirmed)
+      return;
+
+
+
+    try {
+
+
+      const response =
+        await deleteTrip(tripId);
+
+
+
+      if (response.success) {
+
+
+        Swal.fire(
+          "Deleted",
+          "Trip deleted successfully.",
+          "success"
+        );
+
+
+        setTrips(prevTrips =>
+    prevTrips.filter(trip => trip.tripId !== tripId)
+  );
+      }
+
+
+    }
+    catch (error) {
+
+
+      Swal.fire(
+        "Error",
+        "Unable to delete trip.",
+        "error"
+      );
+
+
+    }
+
+
+  };
+
+
 
 
 
@@ -198,163 +375,214 @@ function MyTrips() {
 
     <div className="page">
 
+
       <h1 className="page-title">
         My Trips
       </h1>
 
 
-      {
-      loading ?
-
-      <h2>
-        Loading...
-      </h2>
-
-
-      :
-
-      trips.length===0 ?
-
-      <h2>
-        No trips found.
-      </h2>
-
-
-      :
-
-      <div className="trip-grid">
-
 
       {
-      trips.map((trip)=>(
+        loading ?
+
+          <h2>
+            Loading...
+          </h2>
 
 
-      <div
-      className="trip-card"
-      key={trip.tripId}
-      >
+          :
+
+          trips.length === 0 ?
+
+            <h2>
+              No trips found.
+            </h2>
 
 
-      <img
-
-      src={
-        trip.destination?.imageUrl
-        ?
-        `http://localhost:5055${trip.destination.imageUrl}`
-        :
-        "/placeholder.jpg"
-      }
-
-      alt={trip.destination?.name}
-
-      className="trip-image"
-
-      />
+            :
 
 
-      <div className="trip-content">
+            <div className="trip-grid">
 
 
-      <div className="trip-header">
+              {
+
+                trips.map((trip) => (
 
 
-      <h3>
-      {trip.destination?.name}
-      </h3>
+                  <div
+                    className="trip-card"
+                    key={trip.tripId}
+                  >
 
 
-      <span className="status">
-      Upcoming
-      </span>
+                    <img
 
+                      src={
+                        trip.destination?.imageUrl
+                          ?
+                          `http://localhost:5055${trip.destination.imageUrl}`
+                          :
+                          "/placeholder.jpg"
+                      }
 
-      </div>
+                      alt={trip.destination?.name}
 
+                      className="trip-image"
 
-
-      <p>
-      📅 <strong>Date:</strong>{" "}
-      {
-      new Date(trip.travelDate)
-      .toLocaleDateString()
-      }
-      </p>
-
-
-      <p>
-      💰 <strong>Budget:</strong>
-      Rs. {trip.budget}
-      </p>
-
-
-      <p>
-      ⏳ <strong>Days:</strong>
-      {trip.days}
-      </p>
-
-
-      <p>
-      🚗 <strong>Transport:</strong>
-      {trip.transportation}
-      </p>
-
-
-      <p>
-      🏨 <strong>Hotel:</strong>
-      {trip.hotelCategory}
-      </p>
+                    />
 
 
 
-      <div className="trip-buttons">
-
-
-      <button
-
-      className="view-btn"
-
-      onClick={()=>handleView(trip.tripId)}
-
-      >
-
-      View
-
-      </button>
+                    <div className="trip-content">
 
 
 
-      <button
-
-      className="cancel-btn"
-
-      onClick={()=>handleCancel(trip.tripId)}
-
-      >
-
-      Cancel
-
-      </button>
+                      <div className="trip-header">
 
 
-      </div>
+                        <h3>
+                          {trip.destination?.name}
+                        </h3>
 
 
-      </div>
+
+                        <span
+                          className={`status ${trip.status?.toLowerCase()}`}
+                        >
+
+                          {trip.status}
+
+                        </span>
 
 
-      </div>
+                      </div>
 
 
-      ))
-      }
 
 
-      </div>
+                      <p>
+                        <strong>Date:</strong>{" "}
+                        {
+                          new Date(trip.travelDate)
+                            .toLocaleDateString()
+                        }
+                      </p>
+
+
+
+                      <p>
+                        <strong>Budget:</strong>
+                        Rs. {trip.budget}
+                      </p>
+
+
+
+                      <p>
+                        <strong>Days:</strong>
+                        {trip.days}
+                      </p>
+
+
+
+                      <p>
+                        <strong>Transport:</strong>
+                        {trip.transportation}
+                      </p>
+
+
+
+                      <p>
+                        <strong>Hotel:</strong>
+                        {trip.hotelCategory}
+                      </p>
+
+
+
+
+                      <div className="trip-buttons">
+
+
+
+                        <button
+
+                          className="view-btn"
+
+                          onClick={() =>
+                            handleView(trip.tripId)
+                          }
+
+                        >
+
+                          View
+
+                        </button>
+
+
+
+
+                        <button
+
+                          className="complete-btn"
+
+                          disabled={
+                            trip.status === "Completed"
+                          }
+
+                          onClick={() =>
+                            handleComplete(trip.tripId)
+                          }
+
+                        >
+
+                          Complete
+
+                        </button>
+
+
+
+
+                        <button
+
+                          className="cancel-btn"
+
+                          onClick={() =>
+                            handleCancel(trip.tripId)
+                          }
+
+                        >
+
+                          Cancel
+
+                        </button>
+
+
+
+                      </div>
+
+
+
+                    </div>
+
+
+
+                  </div>
+
+
+                ))
+
+
+              }
+
+
+            </div>
+
 
       }
 
 
     </div>
+
 
   );
 
