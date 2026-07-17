@@ -1,887 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap');
 
-.profile-info h2{
-    font-family: "Great Vibes", cursive;
-    font-size: 48px;
-    font-weight: 400;
-}
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+
+/* ================= GLOBAL ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins", sans-serif;
 }
 
-body {
-    background: #f4f7fb;
+body{
+    background:#f4f7fb;
 }
 
-/*  MAIN LAYOUT  */
 
-.dashboard-container {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    background: #f4f7fb;
-}
-.welcome-header{
+/* ================= DASHBOARD LAYOUT ================= */
+
+.dashboard-container{
     display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.user-avatar{
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    background:#0d6efd;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:22px;
-    font-weight:700;
-}
-/*  SIDEBAR  */
-
-.sidebar {
-    width: 260px;
-    background: #fff;
-    padding: 30px 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,.08);
-    height: 100vh;
-    position: sticky;
-    top: 0;
-}
-
-.logo {
-    color: #2563eb;
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.sidebar ul {
-    list-style: none;
-}
-
-.sidebar li {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: .3s;
-    font-size: 17px;
-}
-
-.sidebar li:hover {
-    background: #edf4ff;
-    color: #2563eb;
-}
-
-.sidebar .active {
-    background: #2563eb;
-    color: white;
-}
-
-.logout {
-    color: red;
-    margin-top: 40px;
-}
-
-/* CONTENT AREA */
-
-.dashboard-content {
-    flex: 1;
-    padding: 30px;
-    overflow-y: auto;
-}
-
-.dashboard-content > * {
-    width: 100%;
-}
-
-/* TOP BAR  */
-
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 35px;
-}
-
-.topbar h2 {
-    font-size: 30px;
-}
-
-.topbar p {
-    color: gray;
-    margin-top: 5px;
-}
-
-/*  STATS  */
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 35px;
-}
-
-.card {
-    background: white;
-    padding: 25px;
-    border-radius: 18px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-.card h3 {
-    color: gray;
-    margin-bottom: 15px;
-}
-
-.card h1 {
-    color: #2563eb;
-    font-size: 35px;
-}
-
-/* PLANNER */
-
-.planner {
-    background: white;
-    border-radius: 20px;
-    padding: 35px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-.planner h2 {
-    margin-bottom: 25px;
-}
-
-.planner-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.planner-grid input,
-.planner-grid select {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 16px;
-    outline: none;
-}
-
-.planner-grid input:focus,
-.planner-grid select:focus {
-    border: 1px solid #2563eb;
-}
-
-.full-width {
-    grid-column: 1 / 4;
-}
-
-.generate-btn {
-    margin-top: 30px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 15px 45px;
-    border-radius: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: .3s;
-}
-
-.generate-btn:hover {
-    background: #1749b7;
-}
-
-/*  DASHBOARD HOME  */
-
-.dashboard-home {
-    padding: 20px;
-}
-
-
-
-
-.dashboard-header p{
-   color:rgba(11, 11, 11, 0.9);
-      font-family: "Great Vibes", cursive;
-      font-size: 28px;
-      margin-bottom: 20px;
-}
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.search-box {
-    width: 250px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-}
-
-.notification-btn {
-    width: 48px;
-    height: 48px;
-    border: none;
-    border-radius: 50%;
-    background: #2563eb;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-/* STATS GRID  */
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    background: white;
-    padding: 25px;
-    border-radius: 18px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-.stat-card h4 {
-    color: #666;
-}
-
-.stat-card h2 {
-    color: #2563eb;
-    margin-top: 10px;
-}
-
-/*  MAIN DASHBOARD LAYOUT  */
-
-.dashboard-main {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 25px;
-}
-
-/*  PLANNER CARD  */
-
-.planner-card {
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-.planner-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
-
-.planner-grid input,
-.planner-grid select {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-/*  RIGHT PANEL  */
-
-.right-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.side-card {
-    background: white;
-    padding: 20px;
-    border-radius: 18px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-.side-card h2 {
-    margin-bottom: 20px;
-}
-
-.mini-card {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.mini-card img {
-    width: 90px;
-    height: 70px;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
-.trip-item {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    width: 100%;
-}
-
-.trip-item:last-child {
-    border: none;
-}
-
-/*  ITINERARY  */
-
-.itinerary-card {
-    margin-top: 30px;
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-.itinerary-card pre {
-    white-space: pre-wrap;
-    line-height: 1.7;
-}
-
-/* RESPONSIVE  */
-
-@media (max-width: 1100px) {
-
-    .stats,
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .planner-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .full-width {
-        grid-column: 1 / 3;
-    }
-
-    .dashboard-main {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-
-    .dashboard-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-    }
-
-    .stats,
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .planner-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .full-width {
-        grid-column: 1;
-    }
-
-    .dashboard-content {
-        padding: 15px;
-    }
-
-    
-
-
-/* ================= BUDGET PLANNER ================= */
-
-.budget-container{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-}
-
-.budget-form,
-.budget-result{
-    background:#fff;
-    padding:30px;
-    border-radius:18px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-.budget-form h2,
-.budget-result h2{
-    color:#2563eb;
-    margin-bottom:25px;
-}
-
-.budget-form label{
-    display:block;
-    margin:15px 0 8px;
-    font-weight:600;
-    color:#555;
-}
-
-.budget-form input,
-.budget-form select{
+    height:100vh;
     width:100%;
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    font-size:15px;
-    transition:.3s;
+    overflow:hidden;
+    background:#f4f7fb;
 }
 
-.budget-form input:focus,
-.budget-form select:focus{
-    border-color:#2563eb;
-    outline:none;
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+
+    width:260px;
+    height:100vh;
+    background:white;
+
+    padding:30px 20px;
+
+    box-shadow:
+    0 0 10px rgba(0,0,0,.08);
+
+    position:sticky;
+    top:0;
 }
 
-.budget-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 0;
-    border-bottom:1px solid #eee;
-    font-size:16px;
-}
 
-.budget-item strong{
+.logo{
+
     color:#2563eb;
-}
-
-.budget-total{
-    margin-top:30px;
-    background:#2563eb;
-    color:#fff;
-    border-radius:15px;
-    padding:25px;
     text-align:center;
+    margin-bottom:40px;
+
+    font-family:"Playfair Display",serif;
 }
 
-.budget-total p{
-    font-size:16px;
-    margin-bottom:8px;
-}
 
-.budget-total h1{
-    font-size:34px;
-    margin:0;
-}
+.sidebar ul{
 
-@media(max-width:900px){
-
-    .budget-container{
-        grid-template-columns:1fr;
-    }
+    list-style:none;
 
 }
-}
-/*  MY TRIPS */
 
-.page{
-    padding:30px;
-    background:#f5f7fb;
-    min-height:100vh;
-}
 
-.page-title{
-    color:#000000;
-    font-size:32px;
-    margin-bottom:30px;
-}
+.sidebar li{
 
-.trip-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:30px;
-}
-
-.trip-card{
-    background:#fff;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:.3s;
-}
-
-.trip-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 15px 35px rgba(37,99,235,.18);
-}
-.trip-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.trip-image{
-    width:100%;
-    height:220px;
-    object-fit:cover;
-}
-
-.trip-content{
-    padding:20px;
-}
-
-.trip-header{
     display:flex;
-    justify-content:space-between;
     align-items:center;
-    margin-bottom:15px;
-}
 
-.trip-header h3{
-    color:#2563eb;
-    font-size:22px;
-    margin:0;
-}
+    gap:15px;
 
-.status{
-    background:#dbeafe;
-    color:#2563eb;
-    padding:5px 10px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:600;
-}
+    padding:15px;
 
-.trip-content p{
-    margin:8px 0;
-    color:#666;
-    font-size:15px;
-}
-
-/* Buttons */
-
-.trip-buttons{
-    display:flex;
-    gap:10px;
-    margin-top:18px;
-}
-
-.view-btn,
-.cancel-btn{
-    border:none;
-    border-radius:6px;
-    padding:8px 16px;
-    font-size:13px;
-    cursor:pointer;
-    transition:.3s;
-    width:auto;
-    min-width:unset;
-    flex:none;
-}
-
-.view-btn{
-    background:#2563eb;
-    color:#fff;
-}
-
-.view-btn:hover{
-    background:#1d4ed8;
-}
-
-.cancel-btn{
-    background:#fff;
-    color:#ef4444;
-    border:1px solid #ef4444;
-}
-
-.cancel-btn:hover{
-    background:#ef4444;
-    color:#fff;
-}
-
-/* =DESTINATIONS */
-
-.destination-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:30px;
-}
-
-.destination-card{
-    background:#fff;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:.3s;
-}
-
-.destination-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 15px 35px rgba(37,99,235,.18);
-}
-
-.destination-card img{
-    width:100%;
-    height:220px;
-    object-fit:cover;
-}
-
-.destination-info{
-    padding:20px;
-}
-
-.destination-info h2{
-    color:#2563eb;
-    font-size:24px;
     margin-bottom:10px;
-}
-
-.destination-info p{
-    color:#666;
-    line-height:1.6;
-    margin-bottom:15px;
-}
-
-.destination-info h3{
-    color:#16a34a;
-    margin-bottom:18px;
-    font-size:18px;
-}
-
-.destination-info button{
-    padding:10px 18px;
-    background:#2563eb;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    transition:.3s;
-}
-
-.destination-info button:hover{
-    background:#1d4ed8;
-}
-
-/* HOTELS  */
-
-.hotel-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:30px;
-}
-
-.hotel-card{
-    background:#fff;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:0.3s;
-}
-
-.hotel-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 15px 35px rgba(37,99,235,.18);
-}
-
-.hotel-card img{
-    width:100%;
-    height:220px;
-    object-fit:cover;
-}
-
-.hotel-info{
-    padding:20px;
-}
-
-.hotel-info h2{
-    color:#2563eb;
-    font-size:22px;
-    margin-bottom:8px;
-}
-
-.hotel-info p{
-    color:#666;
-    margin-bottom:10px;
-    font-size:15px;
-}
-
-.rating{
-    display:inline-block;
-    color:#fbbf24;
-    font-size:16px;
-    margin-bottom:12px;
-}
-
-.hotel-info h3{
-    color:#16a34a;
-    font-size:18px;
-    margin-bottom:15px;
-}
-
-.features{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:20px;
-}
-
-.features span{
-    background:#eef4ff;
-    color:#2563eb;
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:500;
-}
-
-.hotel-info button{
-    padding:10px 18px;
-    background:#2563eb;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:14px;
-    transition:.3s;
-}
-
-.hotel-info button:hover{
-    background:#1d4ed8;
-}
-
-/* ================= PROFILE ================= */
-
-.profile-card{
-    max-width:700px;
-    margin:30px auto;
-    background:#fff;
-    border-radius:18px;
-    padding:30px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-.profile-header{
-    display:flex;
-    align-items:center;
-    gap:20px;
-    padding-bottom:20px;
-    border-bottom:1px solid #eee;
-}
-
-.profile-image{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    object-fit:cover;
-    border:4px solid #2563eb;
-}
-
-.profile-header h2{
-    color:#2563eb;
-    margin-bottom:5px;
-}
-
-.member-text{
-    color:#777;
-    font-size:15px;
-}
-
-.profile-details{
-    margin-top:25px;
-}
-
-.profile-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 0;
-    border-bottom:1px solid #f1f1f1;
-}
-
-.profile-row span{
-    color:#666;
-    font-size:15px;
-}
-
-.profile-row h4{
-    color:#222;
-    font-weight:600;
-}
-
-.edit-btn{
-    margin-top:25px;
-    padding:12px 22px;
-    background:#2563eb;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:15px;
-    transition:0.3s;
-}
-
-.edit-btn:hover{
-    background:#1d4ed8;
-}
-
-.interest-section{
-    grid-column:1 / -1;
-    margin-top:10px;
-}
-
-.interest-title{
-    display:block;
-    font-weight:600;
-    margin-bottom:12px;
-    font-size:16px;
-}
-
-.interest-list{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px 25px;
-}
-
-.interest-list label{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    cursor:pointer;
-    font-size:15px;
-}
-
-.interest-list input[type="checkbox"]{
-    width:18px;
-    height:18px;
-    accent-color:#2563eb;
-}
-.save-trip-container{
-    display:flex;
-    justify-content:center;
-    margin-top:30px;
-}
-
-.save-trip-btn{
-
-    background:#0d6efd;
-    color:#fff;
-
-    border:none;
-
-    padding:14px 30px;
 
     border-radius:10px;
 
@@ -889,37 +78,487 @@ body {
 
     font-size:16px;
 
-    font-weight:600;
+    transition:.3s;
+
+}
+
+
+.sidebar li:hover{
+
+    background:#edf4ff;
+    color:#2563eb;
+
+}
+
+
+.sidebar .active{
+
+    background:#2563eb;
+    color:white;
+
+}
+
+
+.logout{
+
+    color:red;
+    margin-top:40px;
+
+}
+
+
+/* ================= CONTENT ================= */
+
+
+.dashboard-content{
+
+    flex:1;
+
+    padding:30px;
+
+    overflow-y:auto;
+
+}
+
+
+/* ================= TOP BAR ================= */
+
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+
+}
+
+
+.topbar h2{
+
+    font-family:"Playfair Display",serif;
+
+    font-size:32px;
+
+}
+
+
+.topbar p{
+
+    color:#777;
+
+    margin-top:5px;
+
+}
+
+
+/* USER AVATAR */
+
+
+.user-avatar{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+
+
+/* ================= PROFILE HEADER ================= */
+
+
+.profile-info h2{
+
+    font-family:"Great Vibes",cursive;
+
+    font-size:48px;
+
+    font-weight:400;
+
+}
+
+
+
+/* ================= STATS ================= */
+
+
+.stats-grid,
+.stats{
+
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+    margin-bottom:30px;
+
+}
+
+
+.stat-card,
+.card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+    text-align:center;
+
+}
+
+
+
+.stat-card h4,
+.card h3{
+
+    color:#666;
+
+}
+
+
+.stat-card h2,
+.card h1{
+
+    margin-top:10px;
+
+    color:#2563eb;
+
+    font-size:32px;
+
+}
+
+
+
+/* ================= HEADER ACTIONS ================= */
+
+
+.header-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+.search-box{
+
+    width:250px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    font-size:15px;
+
+}
+
+
+.notification-btn{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+}
+
+/* ================= DASHBOARD HOME ================= */
+
+
+.dashboard-home{
+
+    padding:20px;
+
+}
+
+
+.dashboard-header p{
+
+    color:#111;
+
+    font-family:"Great Vibes",cursive;
+
+    font-size:28px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+/* ================= PLANNER ================= */
+
+
+.planner,
+.planner-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+
+.planner h2,
+.planner-card h2{
+
+    margin-bottom:25px;
+
+    font-family:"Playfair Display",serif;
+
+}
+
+
+
+.planner-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:18px;
+
+}
+
+
+
+.planner-grid input,
+.planner-grid select{
+
+    width:100%;
+
+    padding:13px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    outline:none;
+
+    font-size:15px;
+
+}
+
+
+
+.planner-grid input:focus,
+.planner-grid select:focus{
+
+    border-color:#2563eb;
+
+}
+
+
+
+.full-width{
+
+    grid-column:1 / 4;
+
+}
+
+
+
+.generate-btn{
+
+    margin-top:25px;
+
+    padding:14px 40px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    cursor:pointer;
 
     transition:.3s;
-}
-
-.save-trip-btn:hover{
-
-    background:#0b5ed7;
-
-    transform:translateY(-2px);
-
-    box-shadow:0 8px 20px rgba(13,110,253,.3);
 
 }
-/* ===========================
-   ITINERARY
-=========================== */
+
+
+
+.generate-btn:hover{
+
+    background:#1749b7;
+
+}
+
+
+
+/* ================= MAIN DASHBOARD ================= */
+
+
+.dashboard-main{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:25px;
+
+}
+
+
+
+/* ================= RIGHT PANEL ================= */
+
+
+.right-panel{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+
+
+.side-card{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+}
+
+
+
+.side-card h2{
+
+    margin-bottom:20px;
+
+    font-family:"Playfair Display",serif;
+
+}
+
+
+
+.mini-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.mini-card img{
+
+    width:90px;
+
+    height:70px;
+
+    border-radius:10px;
+
+    object-fit:cover;
+
+}
+
+
+
+.trip-item{
+
+    padding:12px 0;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.trip-item:last-child{
+
+    border:none;
+
+}
+
+
+
+/* ================= ITINERARY ================= */
+
 
 .itinerary-card{
 
     margin-top:40px;
 
-    background:#ffffff;
-
-    border-radius:20px;
+    background:white;
 
     padding:35px;
 
-    box-shadow:0 15px 40px rgba(0,0,0,.08);
+    border-radius:20px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.08);
 
 }
+
+
 
 .itinerary-header{
 
@@ -929,15 +568,19 @@ body {
 
 }
 
+
+
 .itinerary-header h2{
 
-    color:#0d6efd;
-
-    margin-bottom:10px;
+    color:#2563eb;
 
     font-size:32px;
 
+    font-family:"Playfair Display",serif;
+
 }
+
+
 
 .itinerary-header p{
 
@@ -945,19 +588,25 @@ body {
 
 }
 
-/* Summary */
+
+
+/* SUMMARY */
+
 
 .summary-grid{
 
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
 
     gap:20px;
 
     margin-bottom:40px;
 
 }
+
+
 
 .summary-box{
 
@@ -975,13 +624,15 @@ body {
 
 }
 
+
+
 .summary-box:hover{
 
     transform:translateY(-5px);
 
-    box-shadow:0 10px 25px rgba(13,110,253,.15);
-
 }
+
+
 
 .summary-box span{
 
@@ -991,15 +642,20 @@ body {
 
 }
 
+
+
 .summary-box h3{
+
+    color:#2563eb;
 
     margin-top:12px;
 
-    color:#0d6efd;
-
 }
 
-/* Timeline */
+
+
+/* TIMELINE */
+
 
 .timeline{
 
@@ -1011,6 +667,8 @@ body {
 
 }
 
+
+
 .timeline-card{
 
     display:flex;
@@ -1019,15 +677,18 @@ body {
 
     background:white;
 
-    border-radius:16px;
-
     padding:22px;
 
-    border-left:6px solid #0d6efd;
+    border-radius:16px;
 
-    box-shadow:0 6px 18px rgba(0,0,0,.06);
+    border-left:6px solid #2563eb;
+
+    box-shadow:
+    0 6px 18px rgba(0,0,0,.06);
 
 }
+
+
 
 .timeline-number{
 
@@ -1035,11 +696,11 @@ body {
 
     height:90px;
 
-    background:#0d6efd;
+    border-radius:50%;
+
+    background:#2563eb;
 
     color:white;
-
-    border-radius:50%;
 
     display:flex;
 
@@ -1049,9 +710,9 @@ body {
 
     font-weight:bold;
 
-    font-size:18px;
-
 }
+
+
 
 .timeline-content{
 
@@ -1059,25 +720,826 @@ body {
 
 }
 
-.timeline-content ul{
 
-    margin:0;
+
+.timeline-content ul{
 
     padding-left:20px;
 
 }
 
+
+
 .timeline-content li{
 
     margin-bottom:12px;
 
+    line-height:1.7;
+
     color:#444;
 
-    line-height:1.7;
+}
+ /* ================= BUDGET PLANNER ================= */
+
+
+.budget-container{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:30px;
 
 }
 
-/* Save Button */
+
+
+.budget-form,
+.budget-result{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+
+.budget-form h2,
+.budget-result h2{
+
+    color:#2563eb;
+
+    margin-bottom:25px;
+
+    font-family:"Playfair Display",serif;
+
+}
+
+
+
+.budget-form label{
+
+    display:block;
+
+    margin:15px 0 8px;
+
+    font-weight:600;
+
+    color:#555;
+
+}
+
+
+
+.budget-form input,
+.budget-form select{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    border:1px solid #ddd;
+
+    font-size:15px;
+
+}
+
+
+
+.budget-form input:focus,
+.budget-form select:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+}
+
+
+
+.budget-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:15px 0;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.budget-item strong{
+
+    color:#2563eb;
+
+}
+
+
+
+.budget-total{
+
+    margin-top:30px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    text-align:center;
+
+}
+
+
+
+.budget-total h1{
+
+    font-size:34px;
+
+}
+
+
+
+/* ================= COMMON PAGE ================= */
+
+
+.page{
+
+    padding:30px;
+
+    background:#f5f7fb;
+
+    min-height:100vh;
+
+}
+
+
+
+.page-title{
+
+    font-family:"Playfair Display",serif;
+
+    font-size:32px;
+
+    margin-bottom:30px;
+
+}
+
+
+
+/* ================= MY TRIPS ================= */
+
+
+.trip-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(300px,1fr));
+
+    gap:30px;
+
+}
+
+
+
+.trip-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+
+.trip-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.trip-card img{
+
+    width:100%;
+
+    height:200px;
+
+    object-fit:cover;
+
+}
+
+
+
+.trip-content{
+
+    padding:20px;
+
+}
+
+
+
+.trip-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+
+.trip-header h3{
+
+    color:#2563eb;
+
+    font-size:22px;
+
+}
+
+
+
+.status{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+}
+
+
+
+.trip-content p{
+
+    color:#666;
+
+    margin:10px 0;
+
+}
+
+
+
+/* BUTTONS */
+
+
+.trip-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:20px;
+
+}
+
+
+
+.view-btn,
+.cancel-btn{
+
+    padding:8px 16px;
+
+    border-radius:7px;
+
+    border:none;
+
+    cursor:pointer;
+
+    font-size:13px;
+
+}
+
+
+
+.view-btn{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+
+
+.cancel-btn{
+
+    background:white;
+
+    color:#ef4444;
+
+    border:1px solid #ef4444;
+
+}
+
+
+
+
+/* ================= DESTINATIONS ================= */
+
+
+.destination-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(300px,1fr));
+
+    gap:30px;
+
+}
+
+
+
+.destination-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+
+.destination-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.destination-card img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+}
+
+
+
+.destination-info{
+
+    padding:20px;
+
+}
+
+
+
+.destination-info h2{
+
+    color:#2563eb;
+
+    font-family:"Playfair Display",serif;
+
+    font-size:24px;
+
+}
+
+
+
+.destination-info p{
+
+    color:#666;
+
+    line-height:1.6;
+
+    margin:15px 0;
+
+}
+
+
+
+.destination-info h3{
+
+    color:#16a34a;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.destination-info button{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+
+
+.destination-info button:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ================= HOTELS ================= */
+
+
+.hotel-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap:30px;
+
+}
+
+
+
+.hotel-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+
+.hotel-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.hotel-card img{
+
+    width:100%;
+
+    height:220px;
+
+    object-fit:cover;
+
+}
+
+
+
+.hotel-info{
+
+    padding:20px;
+
+}
+
+
+
+.hotel-info h2{
+
+    color:#2563eb;
+
+    font-family:"Playfair Display",serif;
+
+    font-size:22px;
+
+}
+
+
+
+.hotel-info p{
+
+    color:#666;
+
+    margin:10px 0;
+
+}
+
+
+
+.rating{
+
+    color:#fbbf24;
+
+    font-size:16px;
+
+}
+
+
+
+.hotel-info h3{
+
+    color:#16a34a;
+
+    margin:15px 0;
+
+}
+
+
+
+.features{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.features span{
+
+    background:#eef4ff;
+
+    color:#2563eb;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+}
+
+
+
+.hotel-info button{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+
+
+
+/* ================= PROFILE ================= */
+
+
+.profile-card{
+
+    max-width:700px;
+
+    margin:30px auto;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+
+.profile-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding-bottom:20px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.profile-image{
+
+    width:100px;
+
+    height:100px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:4px solid #2563eb;
+
+}
+
+
+
+.profile-header h2{
+
+    color:#2563eb;
+
+}
+
+
+
+.member-text{
+
+    color:#777;
+
+}
+
+
+
+/* DETAILS */
+
+
+.profile-details{
+
+    margin-top:25px;
+
+}
+
+
+
+.profile-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:15px 0;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.profile-row span{
+
+    color:#666;
+
+}
+
+
+
+.profile-row h4{
+
+    color:#222;
+
+}
+
+
+
+/* EDIT BUTTON */
+
+
+.edit-btn{
+
+    margin-top:25px;
+
+    padding:12px 22px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+
+
+.edit-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+/* ================= INTERESTS ================= */
+
+
+.interest-section{
+
+    margin-top:20px;
+
+}
+
+
+
+.interest-title{
+
+    display:block;
+
+    font-weight:600;
+
+    margin-bottom:12px;
+
+}
+
+
+
+.interest-list{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:15px 25px;
+
+}
+
+
+
+.interest-list label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    cursor:pointer;
+
+}
+
+
+
+.interest-list input[type="checkbox"]{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:#2563eb;
+
+}
+
+
+
+/* ================= SAVE TRIP BUTTON ================= */
+
 
 .save-trip-container{
 
@@ -1089,9 +1551,11 @@ body {
 
 }
 
+
+
 .save-trip-btn{
 
-    background:#0d6efd;
+    background:#2563eb;
 
     color:white;
 
@@ -1111,13 +1575,266 @@ body {
 
 }
 
+
+
 .save-trip-btn:hover{
 
-    background:#0b5ed7;
+    background:#1d4ed8;
 
     transform:translateY(-3px);
 
-    box-shadow:0 10px 25px rgba(13,110,253,.3);
+    box-shadow:
+    0 10px 25px rgba(37,99,235,.3);
 
 }
+
+/* ================= RESPONSIVE DESIGN ================= */
+
+
+@media(max-width:1100px){
+
+
+    .stats,
+    .stats-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+
+    .planner-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+
+    .full-width{
+
+        grid-column:1 / 3;
+
+    }
+
+
+    .dashboard-main{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .budget-container{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+
+/* ================= TABLET ================= */
+
+
+@media(max-width:768px){
+
+
+    .dashboard-container{
+
+        flex-direction:column;
+
+        height:auto;
+
+        overflow:visible;
+
+    }
+
+
+
+    .sidebar{
+
+        width:100%;
+
+        height:auto;
+
+        position:fixed;
+
+    }
+
+
+
+    .dashboard-content{
+
+        padding:15px;
+
+    }
+
+
+
+    .topbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+
+
+    .header-actions{
+
+        width:100%;
+
+    }
+
+
+
+    .search-box{
+
+        width:100%;
+
+    }
+
+
+
+    .stats,
+    .stats-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .planner-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+
+    .full-width{
+
+        grid-column:1;
+
+    }
+
+
+
+    .timeline-card{
+
+        flex-direction:column;
+
+    }
+
+
+
+    .timeline-number{
+
+        width:90px;
+
+    }
+
+
+
+    .profile-header{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+
+
+    .trip-grid,
+    .destination-grid,
+    .hotel-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+}
+
+
+
+/* ================= SMALL MOBILE ================= */
+
+
+@media(max-width:480px){
+
+
+    .page{
+
+        padding:15px;
+
+    }
+
+
+
+    .page-title{
+
+        font-size:26px;
+
+    }
+
+
+
+    .topbar h2{
+
+        font-size:25px;
+
+    }
+
+
+
+    .planner,
+    .planner-card,
+    .budget-form,
+    .budget-result,
+    .profile-card{
+
+        padding:20px;
+
+    }
+
+
+
+    .save-trip-btn{
+
+        width:100%;
+
+    }
+
+
+}
+
+.category-card{
+
+background:white;
+
+padding:25px;
+
+border-radius:20px;
+
+text-align:center;
+
+box-shadow:0 8px 20px #ddd;
+
+transition:.3s;
+
+}
+
+
+.category-card:hover{
+
+transform:translateY(-8px);
+
+}
+
 

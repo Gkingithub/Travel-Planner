@@ -231,7 +231,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.adventure}
               onChange={(e) =>
                 setEditingData({
@@ -245,7 +245,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.nature}
               onChange={(e) =>
                 setEditingData({
@@ -259,7 +259,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.wildlife}
               onChange={(e) =>
                 setEditingData({
@@ -273,7 +273,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.religious}
               onChange={(e) =>
                 setEditingData({
@@ -287,7 +287,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.culture}
               onChange={(e) =>
                 setEditingData({
@@ -301,7 +301,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.luxury}
               onChange={(e) =>
                 setEditingData({
@@ -315,7 +315,7 @@ function ManageRecommendations() {
             <input
               type="number"
               min="0"
-              max="10"
+              max="1"
               value={editingData.trekking}
               onChange={(e) =>
                 setEditingData({

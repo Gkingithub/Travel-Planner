@@ -52,6 +52,8 @@ function Destinations() {
     }
   };
 
+  
+
   return (
     <div className="page">
 

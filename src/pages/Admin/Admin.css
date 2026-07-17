@@ -221,6 +221,7 @@ tr:hover {
 .admin-layout {
     display: flex;
     min-height: 100vh;
+    
 }
 
 .admin-sidebar {
@@ -228,6 +229,7 @@ tr:hover {
     background: #1f2937;
     color: white;
     padding: 20px;
+    
 }
 
 .admin-sidebar h2 {
@@ -266,6 +268,8 @@ tr:hover {
     background: #1f2937;
     color: white;
     padding: 20px;
+    position: sticky;
+
 }
 
 .admin-content {

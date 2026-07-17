@@ -6,6 +6,10 @@ import { getDestinations } from "../../../service/userDestinationService";
 import { getDashboard } from "../../../service/dashboardService";
 import { generateItinerary } from "../../../service/dashboardService";
 import { saveTrip } from "../../../service/tripService";
+import { FaMountain } from "react-icons/fa";
+import { GiForestCamp } from "react-icons/gi";
+import { MdTempleBuddhist } from "react-icons/md";
+
 const user = JSON.parse(localStorage.getItem("user"));
 const userName = user?.fullName;
 function DashboardHome() {
