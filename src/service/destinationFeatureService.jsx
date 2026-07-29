@@ -1,9 +1,13 @@
 import api from "./api";
 
 // GET all destination features
-export const getDestinationFeatures = async () => {
-  const response = await api.get("/DestinationFeature");
-  return response.data;
+export const getDestinationFeatures = async (search="") => {
+
+    const response = await api.get(
+        `/DestinationFeature?search=${search}`
+    );
+
+    return response.data;
 };
 
 // GET destination feature by ID

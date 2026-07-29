@@ -1,7 +1,9 @@
 import React from "react";
-import { Link ,NavLink} from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "../pages/Admin/Admin.css";
 import { FaRobot } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 import {
   FaTachometerAlt,
   FaUsers,
@@ -13,9 +15,18 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 function AdminSidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("loggedInUser"); // if you use this key anywhere
+
+    navigate("/admin/login", { replace: true });
+  };
+
   return (
     <div className="admin-sidebar">
-
       <h2>Admin Panel</h2>
 
       <ul>
@@ -61,21 +72,19 @@ function AdminSidebar() {
           </NavLink>
         </li>
 
-        <li>
+        {/* <li>
           <NavLink to="/admin/feedback">
             <FaCommentDots className="menu-icon" />
             Feedback
           </NavLink>
-        </li>
-
+        </li> */}
         <li>
-          <NavLink to="/admin/login">
+          <button className="admin-logout-btn" onClick={handleLogout}>
             <FaSignOutAlt className="menu-icon" />
-            Logout
-          </NavLink>
+            <span>Logout</span>
+          </button>
         </li>
       </ul>
-
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { getDestinations } from "../service/userDestinationService";
 import { getDashboard } from "../service/dashboardService";
 import { generateItinerary } from "../service/dashboardService";
 import { saveTrip } from "../service/tripService";
+
 function DashboardHome({ user }) {
   const [dashboard, setDashboard] = useState({
     totalTrips: 0,

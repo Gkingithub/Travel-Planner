@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Destination.css";
+
+import { useLocation } from "react-router-dom";
 import {
   getPopularDestinations,
 } from "../../service/popularDestinationService";
@@ -8,15 +10,39 @@ import {
 } from "../../service/userDestinationService";
 
 function Destinations() {
+
+const location = useLocation();
+ const logout = () => {
+    Swal.fire({
+      title: "Logout",
+      text: "Are you sure you want to logout?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Logout",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("loggedInUser");
+        navigate("/");
+      }
+    });
+  };
+const selectedId = location.state?.destinationId;
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState(null);
 
-  useEffect(() => {
-    loadPopularDestinations();
-  }, []);
+
+useEffect(() => {
+  loadPopularDestinations();
+}, []);
+
+useEffect(() => {
+  if (selectedId && destinations.length > 0) {
+    handleViewDetails(selectedId);
+  }
+}, [destinations]);
 
   const loadPopularDestinations = async () => {
     setLoading(true);
@@ -55,6 +81,7 @@ function Destinations() {
   
 
   return (
+    
     <div className="page">
 
       <h1>Popular Destinations</h1>
@@ -87,7 +114,7 @@ function Destinations() {
                 <h3>Rs. {place.averageBudget}</h3>
 
                 <p>
-                  <strong>Total Bookings:</strong>{" "}
+                  <strong>Total Trips Plan:</strong>{" "}
                   {place.totalBookings}
                 </p>
 

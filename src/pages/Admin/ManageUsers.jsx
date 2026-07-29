@@ -13,7 +13,7 @@ function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-
+const [errors, setErrors] = useState({});
   // Load users
   useEffect(() => {
     loadUsers();
@@ -48,20 +48,72 @@ function ManageUsers() {
   };
 
   // Save User
-  const handleSave = async () => {
-    try {
-      if (editingUser.userId > 0) {
-        await updateUser(editingUser.userId, editingUser);
-      } else {
-        await createUser(editingUser);
-      }
+const handleSave = async () => {
+  const validationErrors = {};
 
-      await loadUsers();
-      setShowModal(false);
-    } catch (error) {
-      console.log(error);
+  // Full Name
+  if (!editingUser.fullName.trim()) {
+    validationErrors.fullName = "Full name is required.";
+  } else if (editingUser.fullName.trim().length < 3) {
+    validationErrors.fullName =
+      "Full name must be at least 3 characters.";
+  }
+
+  // Email
+  if (!editingUser.email.trim()) {
+    validationErrors.email = "Email is required.";
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editingUser.email)
+  ) {
+    validationErrors.email = "Enter a valid email address.";
+  }
+
+  // Password (only while adding)
+  if (
+    editingUser.userId === 0 &&
+    !editingUser.passwordHash.trim()
+  ) {
+    validationErrors.passwordHash = "Password is required.";
+  } else if (
+    editingUser.userId === 0 &&
+    editingUser.passwordHash.length < 6
+  ) {
+    validationErrors.passwordHash =
+      "Password must be at least 6 characters.";
+  }
+
+  // User Type
+  if (!editingUser.userType) {
+    validationErrors.userType = "User type is required.";
+  }
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setErrors({});
+
+  try {
+    if (editingUser.userId > 0) {
+      await updateUser(editingUser.userId, editingUser);
+    } else {
+      await createUser(editingUser);
     }
-  };
+
+    await loadUsers();
+
+    setShowModal(false);
+    setEditingUser(null);
+    setErrors({});
+  } catch (error) {
+    console.log(error);
+
+    if (error.response?.data?.message) {
+      alert(error.response.data.message);
+    }
+  }
+};
 
   // Delete User
   const handleDelete = async (id) => {
@@ -105,9 +157,9 @@ function ManageUsers() {
 
           <tbody>
             {users.length > 0 ? (
-              users.map((user) => (
+              users.map((user,index) => (
                 <tr key={user.userId}>
-                  <td>{user.userId}</td>
+                  <td>{index + 1}</td>
                   <td>{user.fullName}</td>
                   <td>{user.email}</td>
                   <td>{user.userType}</td>
@@ -157,7 +209,9 @@ function ManageUsers() {
                 })
               }
             />
-
+{errors.fullName && (
+  <p className="error">{errors.fullName}</p>
+)}
             <label>Email</label>
             <input
               type="email"
@@ -169,7 +223,9 @@ function ManageUsers() {
                 })
               }
             />
-
+{errors.email && (
+  <p className="error">{errors.email}</p>
+)}
             {!editingUser.userId && (
               <>
                 <label>Password</label>
@@ -185,8 +241,10 @@ function ManageUsers() {
                 />
               </>
             )}
-
-            <label>User Type</label>
+{errors.passwordHash && (
+  <p className="error">{errors.passwordHash}</p>
+)}
+        <label>User Type</label>
             <select
               value={editingUser.userType}
               onChange={(e) =>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import AdminSidebar from "../../components/AdminSidebar";
 import Modal from "../../components/modal";
-
+import {BsPencilSquare ,BsTrash} from "react-icons/bs";
 import { getDestinations } from "../../service/destinationService";
 import { getDestinationFeatures } from "../../service/destinationFeatureService";
 
@@ -15,9 +15,12 @@ import {
 
 function ManageActivities() {
   const [activities, setActivities] = useState([]);
+  const [filteredActivities, setFilteredActivities] = useState([]);
   const [destinations, setDestinations] = useState([]);
   const [destinationFeatures, setDestinationFeatures] = useState([]);
 
+  const [search, setSearch] = useState("");
+  const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
 
@@ -27,24 +30,33 @@ function ManageActivities() {
     loadDestinationFeatures();
   }, []);
 
-  // ============================
-  // Load Activities
-  // ============================
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredActivities(activities);
+    } else {
+      const keyword = search.toLowerCase();
+
+      setFilteredActivities(
+        activities.filter((item) =>
+          item.destinationName.toLowerCase().includes(keyword),
+        ),
+      );
+    }
+  }, [activities, search]);
+
   const loadActivities = async () => {
     try {
       const response = await getActivities();
 
       if (response.success) {
         setActivities(response.data);
+        setFilteredActivities(response.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  // ============================
-  // Load Destinations
-  // ============================
   const loadDestinations = async () => {
     try {
       const response = await getDestinations();
@@ -57,9 +69,6 @@ function ManageActivities() {
     }
   };
 
-  // ============================
-  // Load Destination Features
-  // ============================
   const loadDestinationFeatures = async () => {
     try {
       const response = await getDestinationFeatures();
@@ -72,9 +81,6 @@ function ManageActivities() {
     }
   };
 
-  // ============================
-  // Add Activity
-  // ============================
   const handleAdd = () => {
     setEditingActivity({
       destinationActivityId: 0,
@@ -85,37 +91,99 @@ function ManageActivities() {
       estimatedCost: "",
       durationHours: "",
       imageUrl: "",
+      imageFile: null,
     });
 
     setShowModal(true);
   };
 
-  // ============================
-  // Save Activity
-  // ============================
   const handleSave = async () => {
+    const validationErrors = {};
+
+    // Destination
+    if (!editingActivity.destinationId) {
+      validationErrors.destinationId = "Destination is required.";
+    }
+
+    // Category
+    if (!editingActivity.category.trim()) {
+      validationErrors.category = "Category is required.";
+    }
+
+    // Activity Name
+    if (!editingActivity.activityName.trim()) {
+      validationErrors.activityName = "Activity name is required.";
+    } else if (editingActivity.activityName.length < 3) {
+      validationErrors.activityName =
+        "Activity name must be at least 3 characters.";
+    }
+
+    // Time Slot
+    if (!editingActivity.timeSlot) {
+      validationErrors.timeSlot = "Time slot is required.";
+    }
+
+    // Cost
+    if (
+      editingActivity.estimatedCost === "" ||
+      Number(editingActivity.estimatedCost) <= 0
+    ) {
+      validationErrors.estimatedCost = "Estimated cost must be greater than 0.";
+    }
+
+    // Duration
+    if (
+      editingActivity.durationHours === "" ||
+      Number(editingActivity.durationHours) <= 0
+    ) {
+      validationErrors.durationHours = "Duration must be greater than 0.";
+    }
+
+    // Image Required Only While Adding
+    if (
+      editingActivity.destinationActivityId === 0 &&
+      !editingActivity.imageFile
+    ) {
+      validationErrors.imageFile = "Please select an activity image.";
+    }
+
+    // Stop if errors exist
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+
     try {
+      const formData = new FormData();
+
+      formData.append("destinationId", editingActivity.destinationId);
+      formData.append("activityName", editingActivity.activityName.trim());
+      formData.append("category", editingActivity.category);
+      formData.append("timeSlot", editingActivity.timeSlot);
+      formData.append("estimatedCost", editingActivity.estimatedCost);
+      formData.append("durationHours", editingActivity.durationHours);
+
+      if (editingActivity.imageFile) {
+        formData.append("imageFile", editingActivity.imageFile);
+      }
+
       if (editingActivity.destinationActivityId > 0) {
-        await updateActivity(
-          editingActivity.destinationActivityId,
-          editingActivity
-        );
+        await updateActivity(editingActivity.destinationActivityId, formData);
       } else {
-        await createActivity(editingActivity);
+        await createActivity(formData);
       }
 
       setShowModal(false);
       setEditingActivity(null);
-
+      setErrors({});
       loadActivities();
     } catch (error) {
       console.log(error);
     }
   };
 
-  // ============================
-  // Delete Activity
-  // ============================
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this activity?"))
       return;
@@ -128,123 +196,149 @@ function ManageActivities() {
     }
   };
 
-  // ============================
-  // Filter Categories
-  // ============================
   const selectedFeature = destinationFeatures.find(
-    (x) => x.destinationId === Number(editingActivity?.destinationId)
+    (x) => x.destinationId === Number(editingActivity?.destinationId),
   );
 
-  const categories = [];
-
-  if (selectedFeature) {
-    if (selectedFeature.adventure) categories.push("Adventure");
-    if (selectedFeature.cultural) categories.push("Cultural");
-    if (selectedFeature.nature) categories.push("Nature");
-    if (selectedFeature.historical) categories.push("Historical");
-    if (selectedFeature.wildlife) categories.push("Wildlife");
-    if (selectedFeature.religious) categories.push("Religious");
-    if (selectedFeature.nightLife) categories.push("Night Life");
-    if (selectedFeature.shopping) categories.push("Shopping");
-    if (selectedFeature.photography) categories.push("Photography");
-    if (selectedFeature.hiking) categories.push("Hiking");
-    if (selectedFeature.boating) categories.push("Boating");
-    if (selectedFeature.paragliding) categories.push("Paragliding");
-  }
-
+  const categories = selectedFeature
+    ? Object.entries({
+        Adventure: selectedFeature.adventure,
+        Nature: selectedFeature.nature,
+        Culture: selectedFeature.culture,
+        Luxury: selectedFeature.luxury,
+        Wildlife: selectedFeature.wildlife,
+        Trekking: selectedFeature.trekking,
+        Religious: selectedFeature.religious,
+      })
+        .filter(([_, value]) => value)
+        .map(([key]) => key)
+    : [];
   return (
     <div className="admin-layout">
       <AdminSidebar />
 
       <div className="admin-content">
-
         <h1>Manage Destination Activities</h1>
 
-        <div className="button-container">
-          <button
-            className="add-user-btn"
-            onClick={handleAdd}
-          >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Search by destination..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "320px",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+              outline: "none",
+            }}
+          />
+
+          <button className="add-user-btn" onClick={handleAdd}>
             Add Activity
           </button>
         </div>
 
         <table className="admin-table">
-
           <thead>
-
             <tr>
               <th>ID</th>
               <th>Destination</th>
               <th>Activity</th>
-              <th>Category</th>
+            
               <th>Time Slot</th>
               <th>Cost</th>
               <th>Duration</th>
+              <th>Image</th>
               <th>Action</th>
             </tr>
-
           </thead>
 
           <tbody>
-
-            {activities.length > 0 ? (
-              activities.map((item) => (
+            {filteredActivities.length > 0 ? (
+              filteredActivities.map((item,index) => (
                 <tr key={item.destinationActivityId}>
-
-                  <td>{item.destinationActivityId}</td>
+                 <td>{index + 1}</td>
 
                   <td>{item.destinationName}</td>
 
                   <td>{item.activityName}</td>
 
-                  <td>{item.category}</td>
+          
 
                   <td>{item.timeSlot}</td>
 
-                  <td>{item.estimatedCost}</td>
+                  <td>Rs. {item.estimatedCost}</td>
 
                   <td>{item.durationHours} hrs</td>
 
                   <td>
+                    {item.imageUrl ? (
+                      <img
+                        src={`http://localhost:5055${item.imageUrl}`}
+                        alt={item.activityName}
+                        style={{
+                          width: "70px",
+                          height: "50px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                          border: "1px solid #ddd",
+                        }}
+                      />
+                    ) : (
+                      <span>No Image</span>
+                    )}
+                  </td>
 
+                  <td>
                     <button
                       className="edit-btn"
                       onClick={() => {
                         setEditingActivity({
                           ...item,
+                          imageFile: null,
                         });
 
                         setShowModal(true);
                       }}
                     >
-                      Edit
+                      <BsPencilSquare />
                     </button>
 
                     <button
                       className="delete-btn"
-                      onClick={() =>
-                        handleDelete(item.destinationActivityId)
-                      }
+                      onClick={() => handleDelete(item.destinationActivityId)}
                     >
-                      Delete
+                        <BsTrash />
                     </button>
-
                   </td>
-
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8">
+                <td
+                  colSpan="9"
+                  style={{
+                    textAlign: "center",
+                    padding: "20px",
+                  }}
+                >
                   No activities found.
                 </td>
               </tr>
             )}
-
           </tbody>
+        </table>
 
-        </table>        {showModal && editingActivity && (
+        {showModal && editingActivity && (
           <Modal
             title={
               editingActivity.destinationActivityId > 0
@@ -267,12 +361,11 @@ function ManageActivities() {
                 setEditingActivity({
                   ...editingActivity,
                   destinationId: Number(e.target.value),
-                  category: "", // Reset category when destination changes
+                  category: "",
                 })
               }
             >
               <option value="">Select Destination</option>
-
               {destinations.map((destination) => (
                 <option
                   key={destination.destinationId}
@@ -282,6 +375,10 @@ function ManageActivities() {
                 </option>
               ))}
             </select>
+
+            {errors.destinationId && (
+              <p className="error">{errors.destinationId}</p>
+            )}
 
             {/* Category */}
 
@@ -299,14 +396,13 @@ function ManageActivities() {
               <option value="">Select Category</option>
 
               {categories.map((category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
+                <option key={category} value={category}>
                   {category}
                 </option>
               ))}
             </select>
+
+            {errors.category && <p className="error">{errors.category}</p>}
 
             {/* Activity Name */}
 
@@ -323,13 +419,15 @@ function ManageActivities() {
               }
             />
 
+            {errors.activityName && (
+              <p className="error">{errors.activityName}</p>
+            )}
+
             {/* Time Slot */}
 
             <label>Time Slot</label>
 
-            <input
-              type="text"
-              placeholder="Morning"
+            <select
               value={editingActivity.timeSlot}
               onChange={(e) =>
                 setEditingActivity({
@@ -337,11 +435,21 @@ function ManageActivities() {
                   timeSlot: e.target.value,
                 })
               }
-            />
+            >
+              <option value="">Select Time Slot</option>
+              <option value="Early Morning">Early Morning</option>
+              <option value="Morning">Morning</option>
+              <option value="Late Morning">Late Morning</option>
+              <option value="Afternoon">Afternoon</option>
+              <option value="Evening">Evening</option>
+              <option value="Night">Night</option>
+              <option value="Full Day">Full Day</option>
+            </select>
 
+            {errors.timeSlot && <p className="error">{errors.timeSlot}</p>}
             {/* Estimated Cost */}
 
-            <label>Estimated Cost</label>
+            <label>Estimated Cost (Rs.)</label>
 
             <input
               type="number"
@@ -354,10 +462,13 @@ function ManageActivities() {
               }
             />
 
+            {errors.estimatedCost && (
+              <p className="error">{errors.estimatedCost}</p>
+            )}
+
             {/* Duration */}
 
             <label>Duration (Hours)</label>
-
             <input
               type="number"
               value={editingActivity.durationHours}
@@ -369,33 +480,55 @@ function ManageActivities() {
               }
             />
 
-            {/* Image URL */}
+            {errors.durationHours && (
+              <p className="error">{errors.durationHours}</p>
+            )}
+            {/* Image Upload */}
 
-            <label>Image URL</label>
-
+            <label>Activity Image</label>
             <input
-              type="text"
-              placeholder="https://example.com/image.jpg"
-              value={editingActivity.imageUrl || ""}
-              onChange={(e) =>
-                setEditingActivity({
-                  ...editingActivity,
-                  imageUrl: e.target.value,
-                })
-              }
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files.length > 0) {
+                  const file = e.target.files[0];
+
+                  setEditingActivity({
+                    ...editingActivity,
+                    imageFile: file,
+                    imageUrl: URL.createObjectURL(file),
+                  });
+
+                  setErrors({
+                    ...errors,
+                    imageFile: "",
+                  });
+                }
+              }}
             />
 
+            {errors.imageFile && <p className="error">{errors.imageFile}</p>}
+
+            {/* Preview */}
+
             {editingActivity.imageUrl && (
-              <img
-                src={editingActivity.imageUrl}
-                alt="Activity"
-                width="150"
-                style={{
-                  marginTop: "10px",
-                  borderRadius: "6px",
-                  objectFit: "cover",
-                }}
-              />
+              <div style={{ marginTop: "15px", textAlign: "center" }}>
+                <img
+                  src={
+                    editingActivity.imageFile
+                      ? editingActivity.imageUrl
+                      : `http://localhost:5055${editingActivity.imageUrl}`
+                  }
+                  alt="Preview"
+                  style={{
+                    width: "220px",
+                    height: "140px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border: "1px solid #ddd",
+                  }}
+                />
+              </div>
             )}
           </Modal>
         )}

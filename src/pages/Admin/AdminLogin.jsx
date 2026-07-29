@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Admin.css";
 import Swal from "sweetalert2";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginAdmin } from "../../service/authSerive";
 function AdminLogin() {
 
@@ -9,6 +10,7 @@ const navigate = useNavigate();
 
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
+const [showPassword, setShowPassword] = useState(false);
 
 const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,15 +32,12 @@ const handleLogin = async (e) => {
         const result = await loginAdmin(email, password);
 
         console.log(result);
-
-        localStorage.setItem("token", result.data.token);
-
-        Swal.fire({
-            icon: "success",
-            title: "Login Successful"
-        });
-
-        navigate("/admin/dashboard");
+Swal.fire({
+    icon:"success",
+    title:"Login Successful"
+}).then(()=>{
+    navigate("/admin/dashboard");
+});
 
     } catch (error) {
         console.error(error);
@@ -68,16 +67,26 @@ const handleLogin = async (e) => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+<div className="input-group password-group">
+  <label>Password</label>
 
-          <label>Password</label>
+  <div className="password-wrapper">
+    <input
+      type={showPassword ? "text" : "password"}
+      placeholder="Enter password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+     
+    />
 
-          <input
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+    <span
+      className="eye-icon"
+      onClick={() => setShowPassword(!showPassword)}
+    >
+      {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </span>
+  </div>
+</div>
 
           <button type="submit">Login</button>
 

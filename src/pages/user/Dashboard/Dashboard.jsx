@@ -1,28 +1,24 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import Sidebar from "../../../components/Sidebar";
+
 import DashboardHome from "./DashboardHome";
 import MyTrips from "../MyTrips";
 import Destinations from "../Destinations";
 import Hotels from "../Hotels";
-import BudgetPlanner from "../BudgetPlanner";
 import Profile from "../Profile";
 import Recommendation from "../Recommendation/Recommendation";
 
-import { Link } from "react-router-dom";
 import "./Dashboard.css";
-
 
 function Dashboard() {
   const navigate = useNavigate();
 
-  const [active, setActive] = useState("dashboard");
-
   const user =
     JSON.parse(localStorage.getItem("loggedInUser")) || {
-      name: "Guest",
+      name: "",
       email: "",
     };
 
@@ -43,44 +39,25 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-
-      <Sidebar
-        active={active}
-        setActive={setActive}
-        logout={logout}
-      />
+      <Sidebar logout={logout} />
 
       <div className="dashboard-content">
+        <Routes>
+          <Route index element={<DashboardHome user={user} />} />
 
-        {active === "dashboard" && (
-          <DashboardHome user={user} />
-        )}
+          <Route path="trips" element={<MyTrips />} />
 
-        {active === "trips" && (
-          <MyTrips />
-        )}
+          <Route path="destinations" element={<Destinations />} />
 
-        {active === "destinations" && (
-          <Destinations />
-        )}
+          <Route path="hotels" element={<Hotels />} />
 
-        {active === "hotels" && (
-          <Hotels />
-        )}
+          
 
-        {active === "budget" && (
-          <BudgetPlanner />
-        )}
+          <Route path="recommendation" element={<Recommendation />} />
 
-        {active === "profile" && (
-          <Profile user={user} />
-        )}
-
-         {active === "recommendation" && (
-          <Recommendation />
-        )}
+          <Route path="profile" element={<Profile user={user} />} />
+        </Routes>
       </div>
-
     </div>
   );
 }

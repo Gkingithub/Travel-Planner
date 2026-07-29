@@ -41,7 +41,7 @@ function Hotels() {
             <div className="hotel-info">
               <h2>{hotel.hotelName}</h2>
 
-              <p>{hotel.category}</p>
+              <p className="category">{hotel.category}</p>
 
               <span className="rating">
                 {"★".repeat(Number(hotel.rating))}
@@ -49,12 +49,30 @@ function Hotels() {
 
               <h3>Rs. {hotel.pricePerNight} / night</h3>
 
+              {/* Contact Details */}
+              <div className="contact-box">
+                <h4> Contact Details</h4>
+
+                <p>
+                  <strong>Phone:</strong>{" "}
+                  {hotel.contactNumber || "Not Available"}
+                </p>
+
+                <p>
+                  <strong>Email:</strong>{" "}
+                  {hotel.email || "Not Available"}
+                </p>
+              </div>
+
+
               <div className="features">
-                {hotel.facilities
-                  ? hotel.facilities.split(",").map((facility, i) => (
-                      <span key={i}>{facility.trim()}</span>
-                    ))
-                  : <span>No facilities listed</span>}
+                {hotel.facilities ? (
+                  hotel.facilities.split(",").map((facility, i) => (
+                    <span key={i}>{facility.trim()}</span>
+                  ))
+                ) : (
+                  <span>No facilities listed</span>
+                )}
               </div>
             </div>
           </div>

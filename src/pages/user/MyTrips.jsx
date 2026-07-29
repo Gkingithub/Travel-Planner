@@ -153,60 +153,163 @@ function MyTrips() {
 
 
 
-      Swal.fire({
+ Swal.fire({
+  title: `
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+      <i class="bi bi-airplane-fill" style="font-size:28px;color:#0d6efd;"></i>
+      <span>${trip.destination?.name}</span>
+    </div>
+  `,
 
-        title:
-          `${trip.destination?.name} Trip`,
+  
+  background: "#ffffff",
+  showCloseButton: true,
+  confirmButtonText: "Close",
+  confirmButtonColor: "#0d6efd",
+  customClass: {
+    popup: "trip-popup",
+    htmlContainer: "trip-popup-body"
+  },
 
+  html: `
+<div style="font-family:Segoe UI,sans-serif;">
 
-        width: "700px",
+    <img
+      src="http://localhost:5055${trip.destination?.imageUrl}"
+      style="
+        width:100%;
+        height:260px;
+        object-fit:cover;
+        border-radius:12px;
+        margin-bottom:20px;
+      "
+    />
 
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:15px;
+        margin-bottom:20px;
+    ">
 
-        html: `
+        <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+            <i class="bi bi-calendar-event-fill" style="color:#0d6efd;"></i>
+            <strong> Date</strong><br>
+            ${new Date(trip.travelDate).toLocaleDateString()}
+        </div>
 
-        <p>
-        <strong>Date:</strong>
-        ${new Date(trip.travelDate)
-            .toLocaleDateString()}
-        </p>
+        <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+            <i class="bi bi-people-fill" style="color:#0d6efd;"></i>
+            <strong> Travellers</strong><br>
+            ${trip.travellers}
+        </div>
 
+        <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+            <i class="bi bi-car-front-fill" style="color:#0d6efd;"></i>
+            <strong> Transport</strong><br>
+            ${trip.transportation}
+        </div>
 
-        <p>
-        <strong>Status:</strong>
-        ${trip.status}
-        </p>
+        <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+            <i class="bi bi-building-fill" style="color:#0d6efd;"></i>
+            <strong> Hotel</strong><br>
+            ${trip.hotelCategory}
+        </div>
 
+        <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+            <i class="bi bi-cash-stack" style="color:#28a745;"></i>
+            <strong> Budget</strong><br>
+            Rs. ${trip.budget}
+        </div>
 
-        <p>
-        <strong>Travellers:</strong>
-        ${trip.travellers}
-        </p>
+        <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+            <i class="bi bi-geo-alt-fill" style="color:#dc3545;"></i>
+            <strong> Status</strong><br>
 
+            <span style="
+                color:${trip.status === "Completed" ? "#198754" : "#ff9800"};
+                font-weight:bold;
+            ">
+                ${trip.status}
+            </span>
+        </div>
 
-        <p>
-        <strong>Transportation:</strong>
-        ${trip.transportation}
-        </p>
+    </div>
 
+    <hr>
 
-        <p>
-        <strong>Hotel:</strong>
-        ${trip.hotelCategory}
-        </p>
+    <h3 style="margin-bottom:20px;color:#0d6efd;">
+        <i class="bi bi-map-fill"></i>
+        Daily Itinerary
+    </h3>
 
+    ${
+      trip.itineraries && trip.itineraries.length > 0
+        ? trip.itineraries.map(day => `
+        <div style="
+            border-left:5px solid #0d6efd;
+            background:#fafafa;
+            padding:18px;
+            border-radius:10px;
+            margin-bottom:18px;
+            text-align:left;
+            box-shadow:0 2px 8px rgba(0,0,0,.08);
+        ">
 
-        <hr>
+            <h4 style="margin-bottom:12px;color:#0d6efd;">
+                <i class="bi bi-calendar-week-fill"></i>
+                Day ${day.dayNumber}
+            </h4>
 
+            <p>
+                <i class="bi bi-sunrise-fill" style="color:#f39c12;"></i>
+                <strong> Morning</strong><br>
+                ${day.morning || "-"}
+            </p>
 
-        ${itineraryHTML}
+            <p>
+                <i class="bi bi-sun-fill" style="color:#ff9800;"></i>
+                <strong> Afternoon</strong><br>
+                ${day.afternoon || "-"}
+            </p>
 
-        `,
+            <p>
+                <i class="bi bi-moon-stars-fill" style="color:#6f42c1;"></i>
+                <strong> Evening</strong><br>
+                ${day.evening || "-"}
+            </p>
 
+            <div style="
+                margin-top:12px;
+                background:#eaf7ef;
+                display:inline-block;
+                padding:8px 14px;
+                border-radius:20px;
+                color:#198754;
+                font-weight:bold;
+            ">
+               
+            </div>
 
-        confirmButtonText: "Close"
+        </div>
+        `).join("")
+        : `
+        <div style="
+            padding:30px;
+            background:#f8f9fa;
+            border-radius:10px;
+            text-align:center;
+        ">
+            <i class="bi bi-info-circle-fill" style="font-size:35px;color:#0d6efd;"></i>
+            <br><br>
+            No itinerary available.
+        </div>
+        `
+    }
 
-      });
-
+</div>
+`
+});
 
     }
     catch (error) {
@@ -231,69 +334,59 @@ function MyTrips() {
   // COMPLETE TRIP
   // ============================
 
-  const handleComplete = async (tripId) => {
+const handleComplete = async (tripId) => {
 
+  const result = await Swal.fire({
+    title: "Complete Trip?",
+    text: "Mark this trip as completed?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Complete"
+  });
 
-    const result = await Swal.fire({
+  if (!result.isConfirmed) return;
 
-      title: "Complete Trip?",
+  try {
 
-      text: "Mark this trip as completed?",
+    const response = await completeTrip(tripId);
 
-      icon: "question",
+    if (response.success) {
 
-      showCancelButton: true,
+      setTrips(prevTrips =>
+        prevTrips.map(trip =>
+          trip.tripId === tripId
+            ? { ...trip, status: "Completed" }
+            : trip
+        )
+      );
 
-      confirmButtonText: "Yes, Complete"
+      Swal.fire(
+        "Completed",
+        "Trip marked as completed.",
+        "success"
+      );
 
-    });
-
-
-
-    if (!result.isConfirmed)
-      return;
-
-
-
-    try {
-
-
-      const response =
-        await completeTrip(tripId);
-
-
-
-      if (response.success) {
-
-
-        Swal.fire(
-          "Completed",
-          "Trip marked as completed.",
-          "success"
-        );
-
-
-        loadTrips();
-
-
-      }
-
-
-    }
-    catch (error) {
-
+    } else {
 
       Swal.fire(
         "Error",
-        "Unable to update trip.",
+        response.message,
         "error"
       );
 
-
     }
 
+  } catch (error) {
 
-  };
+    Swal.fire(
+      "Error",
+      "Unable to update trip.",
+      "error"
+    );
+
+  }
+
+};
 
 
 
@@ -303,69 +396,55 @@ function MyTrips() {
   // DELETE / CANCEL TRIP
   // ============================
 
-  const handleCancel = async (tripId) => {
+const handleCancel = async (tripId) => {
 
+  const result = await Swal.fire({
+    title: "Cancel Trip?",
+    text: "This will delete the trip permanently.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete"
+  });
 
-    const result = await Swal.fire({
+  if (!result.isConfirmed) return;
 
-      title: "Cancel Trip?",
+  try {
 
-      text: "This will delete the trip permanently.",
+    const response = await deleteTrip(tripId);
 
-      icon: "warning",
+    if (response.success) {
 
-      showCancelButton: true,
+      setTrips(prevTrips =>
+        prevTrips.filter(trip => trip.tripId !== tripId)
+      );
 
-      confirmButtonText: "Yes, Delete"
+      Swal.fire(
+        "Deleted",
+        "Trip deleted successfully.",
+        "success"
+      );
 
-    });
-
-
-
-    if (!result.isConfirmed)
-      return;
-
-
-
-    try {
-
-
-      const response =
-        await deleteTrip(tripId);
-
-
-
-      if (response.success) {
-
-
-        Swal.fire(
-          "Deleted",
-          "Trip deleted successfully.",
-          "success"
-        );
-
-
-        setTrips(prevTrips =>
-    prevTrips.filter(trip => trip.tripId !== tripId)
-  );
-      }
-
-
-    }
-    catch (error) {
-
+    } else {
 
       Swal.fire(
         "Error",
-        "Unable to delete trip.",
+        response.message,
         "error"
       );
 
-
     }
 
+  } catch (error) {
 
-  };
+    Swal.fire(
+      "Error",
+      "Unable to delete trip.",
+      "error"
+    );
+
+  }
+
+};
 
 
 
@@ -471,10 +550,7 @@ function MyTrips() {
 
 
 
-                      <p>
-                        <strong>Budget:</strong>
-                        Rs. {trip.budget}
-                      </p>
+                   
 
 
 

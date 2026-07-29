@@ -16,18 +16,22 @@ import { getDestinations } from "../../service/destinationService";
 function ManageRecommendations() {
   const [recommendations, setRecommendations] = useState([]);
   const [destinations, setDestinations] = useState([]);
-
+  const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [editingData, setEditingData] = useState(null);
-
+  const [search, setSearch] = useState("");
   useEffect(() => {
-    loadRecommendations();
-    loadDestinations();
-  }, []);
+    const delay = setTimeout(() => {
+      loadRecommendations();
+      loadDestinations();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [search]);
 
   const loadRecommendations = async () => {
     try {
-      const response = await getDestinationFeatures();
+      const response = await getDestinationFeatures(search);
 
       if (response.success) {
         setRecommendations(response.data);
@@ -38,7 +42,6 @@ function ManageRecommendations() {
       console.log(err);
     }
   };
-
   const loadDestinations = async () => {
     try {
       const response = await getDestinations();
@@ -63,33 +66,73 @@ function ManageRecommendations() {
     setEditingData({
       destinationFeatureId: 0,
       destinationId: "",
-      adventure: false,
-      nature: false,
-      wildlife: false,
-      religious: false,
-      culture: false,
-      luxury: false,
-      trekking: false,
+      adventure: 0,
+      nature: 0,
+      wildlife: 0,
+      religious: 0,
+      culture: 0,
+      luxury: 0,
+      trekking: 0,
     });
 
     setShowModal(true);
   };
 
   const handleSave = async () => {
+    const validationErrors = {};
+
+    if (!editingData.destinationId) {
+      validationErrors.destinationId = "Destination is required.";
+    }
+
+    const features = [
+      "adventure",
+      "nature",
+      "wildlife",
+      "religious",
+      "culture",
+      "luxury",
+      "trekking",
+    ];
+
+    features.forEach((field) => {
+      const value = Number(editingData[field]);
+
+      if (value !== 0 && value !== 1) {
+        validationErrors[field] = "Value must be 0 or 1.";
+      }
+    });
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+
     try {
-      if (editingData.destinationFeatureId > 0) {
-        await updateDestinationFeature(
-          editingData.destinationFeatureId,
-          editingData
-        );
+      const payload = {
+        destinationFeatureId: editingData.destinationFeatureId,
+        destinationId: Number(editingData.destinationId),
+        adventure: Number(editingData.adventure),
+        nature: Number(editingData.nature),
+        wildlife: Number(editingData.wildlife),
+        religious: Number(editingData.religious),
+        culture: Number(editingData.culture),
+        luxury: Number(editingData.luxury),
+        trekking: Number(editingData.trekking),
+      };
+
+      if (payload.destinationFeatureId > 0) {
+        await updateDestinationFeature(payload.destinationFeatureId, payload);
       } else {
-        await createDestinationFeature(editingData);
+        await createDestinationFeature(payload);
       }
 
-      await loadRecommendations();
-
+      loadRecommendations();
       setShowModal(false);
       setEditingData(null);
+      setErrors({});
     } catch (err) {
       console.log(err);
     }
@@ -98,7 +141,7 @@ function ManageRecommendations() {
   const handleDelete = async (id) => {
     if (
       !window.confirm(
-        "Are you sure you want to delete this destination feature?"
+        "Are you sure you want to delete this destination feature?",
       )
     )
       return;
@@ -109,19 +152,36 @@ function ManageRecommendations() {
     } catch (err) {
       console.log(err);
     }
-  };  return (
+  };
+  return (
     <div className="admin-layout">
       <AdminSidebar />
 
       <div className="admin-content">
         <h1>Manage Destination Features</h1>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Search by destination..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "320px",
+              padding: "10px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+              outline: "none",
+            }}
+          />
 
-        <div className="button-container">
-          <button
-            type="button"
-            className="add-user-btn"
-            onClick={handleAdd}
-          >
+          <button type="button" className="add-user-btn" onClick={handleAdd}>
             Add Feature
           </button>
         </div>
@@ -144,9 +204,9 @@ function ManageRecommendations() {
 
           <tbody>
             {recommendations.length > 0 ? (
-              recommendations.map((item) => (
+              recommendations.map((item,index) => (
                 <tr key={item.destinationFeatureId}>
-                  <td>{item.destinationFeatureId}</td>
+                <td>{index + 1}</td>
 
                   <td>{item.destinationName}</td>
 
@@ -174,9 +234,7 @@ function ManageRecommendations() {
 
                     <button
                       className="delete-btn"
-                      onClick={() =>
-                        handleDelete(item.destinationFeatureId)
-                      }
+                      onClick={() => handleDelete(item.destinationFeatureId)}
                     >
                       Delete
                     </button>
@@ -185,9 +243,7 @@ function ManageRecommendations() {
               ))
             ) : (
               <tr>
-                <td colSpan="10">
-                  No destination features found.
-                </td>
+                <td colSpan="10">No destination features found.</td>
               </tr>
             )}
           </tbody>
@@ -205,28 +261,25 @@ function ManageRecommendations() {
               setEditingData(null);
             }}
             onSave={handleSave}
-          >            <label>Destination</label>
-
+          >
+            {" "}
+            <label>Destination</label>
             <Select
               options={destinationOptions}
               placeholder="Search destination..."
               isSearchable
               value={
                 destinationOptions.find(
-                  (option) =>
-                    option.value === editingData.destinationId
+                  (option) => option.value === editingData.destinationId,
                 ) || null
               }
               onChange={(selectedOption) =>
                 setEditingData({
                   ...editingData,
-                  destinationId: selectedOption
-                    ? selectedOption.value
-                    : "",
+                  destinationId: selectedOption ? selectedOption.value : "",
                 })
               }
             />
-
             <label>Adventure</label>
             <input
               type="number"
@@ -240,7 +293,7 @@ function ManageRecommendations() {
                 })
               }
             />
-
+            {errors.adventure && <p className="error">{errors.adventure}</p>}
             <label>Nature</label>
             <input
               type="number"
@@ -254,7 +307,7 @@ function ManageRecommendations() {
                 })
               }
             />
-
+            {errors.adventure && <p className="error">{errors.nature}</p>}
             <label>Wildlife</label>
             <input
               type="number"
@@ -268,7 +321,7 @@ function ManageRecommendations() {
                 })
               }
             />
-
+            {errors.wildlife && <p className="error">{errors.wildlife}</p>}
             <label>Religious</label>
             <input
               type="number"
@@ -282,7 +335,7 @@ function ManageRecommendations() {
                 })
               }
             />
-
+            {errors.religious && <p className="error">{errors.religious}</p>}
             <label>Culture</label>
             <input
               type="number"
@@ -296,7 +349,7 @@ function ManageRecommendations() {
                 })
               }
             />
-
+            {errors.culture && <p className="error">{errors.culture}</p>}
             <label>Luxury</label>
             <input
               type="number"
@@ -310,7 +363,7 @@ function ManageRecommendations() {
                 })
               }
             />
-
+            {errors.luxury && <p className="error">{errors.luxury}</p>}
             <label>Trekking</label>
             <input
               type="number"
@@ -324,6 +377,7 @@ function ManageRecommendations() {
                 })
               }
             />
+            {errors.trekking && <p className="error">{errors.trekking}</p>}
           </Modal>
         )}
       </div>

@@ -3,7 +3,6 @@ import api from "./api";
 // GET ALL
 export const getActivities = async () => {
   const response = await api.get("/admin/DestinationActivity");
-  console.log(response.data);
   return response.data;
 };
 
@@ -23,20 +22,30 @@ export const getActivitiesByDestination = async (destinationId) => {
 };
 
 // CREATE
-export const createActivity = async (activity) => {
+export const createActivity = async (formData) => {
   const response = await api.post(
     "/admin/DestinationActivity",
-    activity
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
 
   return response.data;
 };
 
 // UPDATE
-export const updateActivity = async (id, activity) => {
+export const updateActivity = async (id, formData) => {
   const response = await api.put(
     `/admin/DestinationActivity/${id}`,
-    activity
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
 
   return response.data;

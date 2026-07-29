@@ -1,10 +1,13 @@
 import api from "./api";
 
-export const getDestinations = async () => {
-  const response = await api.get("/Destination");
+export const getDestinations = async (search="") => {
+
+  const response = await api.get(
+    `/Destination?search=${search}`
+  );
+
   return response.data;
 };
-
 export const createDestination = async (destination) => {
   const response = await api.post("/Destination", {
     name: destination.name,

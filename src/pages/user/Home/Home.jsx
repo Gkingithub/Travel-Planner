@@ -81,11 +81,8 @@ function Home() {
             Dashboard
           </a>
 
-          <a href="#destinations">Destinations</a>
+          <a href="#destination">Destinations</a>
 
-          <a href="#statistics">Statistics</a>
-
-          <a href="#footer">Contact</a>
 
           <Link to="/login">
             <button className="login-btn">Login</button>
@@ -107,7 +104,6 @@ function Home() {
               <br />
               Travel Better.
             </h1>
-
             <p>
               Discover Nepal's most beautiful destinations, create personalized
               itineraries, estimate your travel budget, and enjoy hassle-free
@@ -120,7 +116,6 @@ function Home() {
                   <h3>Get Started</h3>
                 </button>
               </Link>
-
               <Link to="/login">
                 <button className="secondary-btn">
                   Login
@@ -156,13 +151,13 @@ function Home() {
                   key={destination.destinationId}
                 >
                   <img
-                    src={
-                      destination.imageUrl
-                        ? destination.imageUrl
-                        : "/placeholder.jpg"
-                    }
-                    alt={destination.name}
-                  />
+                 src={
+                 destination.imageUrl
+                ? `http://localhost:5055${destination.imageUrl}`
+                : "/placeholder.jpg"
+                }
+              alt={destination.name}
+              />
 
                   <div className="destination-content">
                     <h3>{destination.name}</h3>
