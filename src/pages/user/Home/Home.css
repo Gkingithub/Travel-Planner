@@ -51,14 +51,25 @@
     color: var(--text);
     min-height: 100vh;
 }
-
+.notification-badge {
+  margin-left: auto;
+  background: #ff3b30;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 
 .navbar {
     width: 90%;
     max-width: 1200px;
     margin: auto;
-    margin-top: 10px;
     height: 80px;
     display: flex;
     justify-content: space-between;
@@ -68,7 +79,7 @@
 .logo h2 {
     color: var(--primary);
     font-size: 45px;
-    margin-top: 50px;
+    margin-top:30px;
 
 
 }
@@ -140,6 +151,7 @@
     color: #fff;
     text-align: center;
     padding: 70px 20px;
+    height: 70vh;
 }
 
 .hero {
@@ -160,12 +172,12 @@
     max-width: 700px;
     margin: 25px auto;
     color: var(--text-light);
-    font-size: 19nopx;
+    font-size: var(--font-size-small);
     line-height: 1.8;
 }
 
 .hero-content p {
-    font-size: 19px;
+    font-size:var(--font-size-small);
 }
 
 .hero-buttons {
@@ -180,7 +192,7 @@
     width: 170px;
     padding: 15px;
     border-radius: var(--radius);
-    font-size: 16px;
+    font-size: var(--font-size-small);;
     cursor: pointer;
     transition: var(--transition);
 }
@@ -238,7 +250,8 @@
     padding: 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    font-size: 18px;
+    font-size: var(--font-size-small);
+
 }
 
 .planner-box button {
@@ -246,7 +259,7 @@
     color: white;
     border: none;
     border-radius: var(--radius);
-    font-size: 18px;
+    font-size: var(--font-size-small);
     cursor: pointer;
     transition: var(--transition);
 }
@@ -307,7 +320,7 @@
     display: block;
     margin: 20px 20px 5px;
     color: var(--text-light);
-    font-size: 14px;
+    font-size: var(--font-size-small);;
 }
 
 .destination-card h4 {
@@ -358,7 +371,7 @@
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:28px;
+    font-size:var(--font-size-large);;
     box-shadow:0 10px 25px rgba(37,99,235,.3);
 }
 

@@ -17,6 +17,7 @@ function Profile() {
     userId: 0,
     name: "",
     email: "",
+    phoneNumber:"",
     profileImage: "",
     imageFile: null,
     createdAt: "",
@@ -42,6 +43,7 @@ function Profile() {
           userId: response.data.userId,
           name: response.data.name,
           email: response.data.email,
+          phoneNumber:response.data.phoneNumber,
           profileImage: response.data.profileImage || "",
           imageFile: null,
           createdAt: response.data.createdAt,
@@ -72,7 +74,7 @@ function Profile() {
 
       formData.append("FullName", profile.name);
       formData.append("Email", profile.email);
-
+      formData.append("PhoneNumber", profile.phoneNumber);
       if (profile.imageFile) {
         formData.append("ProfileImage", profile.imageFile);
       }
@@ -140,6 +142,10 @@ function Profile() {
             <span>Email</span>
             <h4>{profile.email}</h4>
           </div>
+          <div className="profile-row">
+            <span>Phone Number</span>
+            <h4>{profile.phoneNumber}</h4>
+          </div>
 
           <div className="profile-row">
             <span>Member Since</span>
@@ -195,6 +201,20 @@ function Profile() {
               setProfile({
                 ...profile,
                 email: e.target.value,
+              })
+            }
+          />
+          
+          <label>Phone Number</label>
+
+          <input
+            type="tel"
+              maxLength={10}
+            value={profile.phoneNumber}
+            onChange={(e) =>
+              setProfile({
+                ...profile,
+                phoneNumber: e.target.value,
               })
             }
           />

@@ -47,7 +47,7 @@ function AdminSidebar() {
         <li>
           <NavLink to="/admin/trips">
             <FaMapMarkedAlt className="menu-icon" />
-            Manage Trips
+            Manage Destination
           </NavLink>
         </li>
 
@@ -72,12 +72,18 @@ function AdminSidebar() {
           </NavLink>
         </li>
 
-        {/* <li>
-          <NavLink to="/admin/feedback">
+        <li>
+          <NavLink to="/admin/bookings">
             <FaCommentDots className="menu-icon" />
-            Feedback
+            Manage Booking
           </NavLink>
-        </li> */}
+        </li>
+          <li>
+          <NavLink to="/admin/booking-history">
+            <FaCommentDots className="menu-icon" />
+             Booking History
+          </NavLink>
+        </li>
         <li>
           <button className="admin-logout-btn" onClick={handleLogout}>
             <FaSignOutAlt className="menu-icon" />

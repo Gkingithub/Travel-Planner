@@ -6,97 +6,56 @@ import {
   getMyTrips,
   getTripDetails,
   completeTrip,
-  deleteTrip
+  deleteTrip,
 } from "../../service/tripService";
 
-
+import { createBooking } from "../../service/bookingService";
 function MyTrips() {
-
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
-
-
+  const [search, setSearch] = useState("");
   useEffect(() => {
     loadTrips();
   }, []);
 
-
   const loadTrips = async () => {
-
     try {
-
       setLoading(true);
 
       const response = await getMyTrips();
 
       if (response.success) {
         setTrips(response.data);
+      } else {
+        Swal.fire("Error", response.message, "error");
       }
-      else {
-
-        Swal.fire(
-          "Error",
-          response.message,
-          "error"
-        );
-
-      }
-
-    }
-    catch (error) {
-
-      Swal.fire(
-        "Error",
-        "Unable to load trips.",
-        "error"
-      );
-
-    }
-    finally {
-
+    } catch (error) {
+      Swal.fire("Error", "Unable to load trips.", "error");
+    } finally {
       setLoading(false);
-
     }
-
   };
-
-
 
   // ============================
   // VIEW DETAILS
   // ============================
 
   const handleView = async (tripId) => {
-
     try {
-
       const response = await getTripDetails(tripId);
 
-
       if (!response.success) {
-
-        Swal.fire(
-          "Error",
-          response.message,
-          "error"
-        );
+        Swal.fire("Error", response.message, "error");
 
         return;
       }
 
-
       const trip = response.data;
-
 
       let itineraryHTML = "";
 
-
       if (trip.itineraries && trip.itineraries.length > 0) {
-
-
-        trip.itineraries.forEach(day => {
-
-
+        trip.itineraries.forEach((day) => {
           itineraryHTML += `
 
           <div style="
@@ -138,40 +97,29 @@ function MyTrips() {
           </div>
 
           `;
-
-
         });
-
-
-      }
-      else {
-
-        itineraryHTML =
-          "<p>No itinerary found.</p>";
-
+      } else {
+        itineraryHTML = "<p>No itinerary found.</p>";
       }
 
-
-
- Swal.fire({
-  title: `
+      Swal.fire({
+        title: `
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
       <i class="bi bi-airplane-fill" style="font-size:28px;color:#0d6efd;"></i>
       <span>${trip.destination?.name}</span>
     </div>
   `,
 
-  
-  background: "#ffffff",
-  showCloseButton: true,
-  confirmButtonText: "Close",
-  confirmButtonColor: "#0d6efd",
-  customClass: {
-    popup: "trip-popup",
-    htmlContainer: "trip-popup-body"
-  },
+        background: "#ffffff",
+        showCloseButton: true,
+        confirmButtonText: "Close",
+        confirmButtonColor: "#0d6efd",
+        customClass: {
+          popup: "trip-popup",
+          htmlContainer: "trip-popup-body",
+        },
 
-  html: `
+        html: `
 <div style="font-family:Segoe UI,sans-serif;">
 
     <img
@@ -245,7 +193,9 @@ function MyTrips() {
 
     ${
       trip.itineraries && trip.itineraries.length > 0
-        ? trip.itineraries.map(day => `
+        ? trip.itineraries
+            .map(
+              (day) => `
         <div style="
             border-left:5px solid #0d6efd;
             background:#fafafa;
@@ -292,7 +242,9 @@ function MyTrips() {
             </div>
 
         </div>
-        `).join("")
+        `,
+            )
+            .join("")
         : `
         <div style="
             padding:30px;
@@ -308,361 +260,252 @@ function MyTrips() {
     }
 
 </div>
-`
-});
-
-    }
-    catch (error) {
-
+`,
+      });
+    } catch (error) {
       console.log(error);
 
-      Swal.fire(
-        "Error",
-        "Unable to fetch trip details.",
-        "error"
-      );
-
+      Swal.fire("Error", "Unable to fetch trip details.", "error");
     }
-
   };
 
+  //============================
+  //Booking
+  //============================
+  // ============================
+  // BOOK TRIP
+  // ============================
 
+  const handleBooking = async (trip) => {
+    const result = await Swal.fire({
+      title: "Confirm Booking?",
 
+      html: `
+      <div style="text-align:left">
 
+        <p>
+          <strong>Destination:</strong>
+          ${trip.destination?.name}
+        </p>
 
+        <p>
+          <strong>Date:</strong>
+          ${new Date(trip.travelDate).toLocaleDateString()}
+        </p>
+
+        <p>
+          <strong>Budget:</strong>
+          Rs. ${trip.budget}
+        </p>
+
+        <hr>
+
+        <p>
+          Your booking request will be sent to admin for approval.
+        </p>
+
+      </div>
+    `,
+
+      icon: "question",
+
+      showCancelButton: true,
+
+      confirmButtonText: "Book Now",
+
+      cancelButtonText: "Cancel",
+
+      confirmButtonColor: "#0d6efd",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await createBooking(trip.tripId);
+
+      if (response.success) {
+        Swal.fire(
+          "Booking Sent",
+          "Your booking request has been sent to admin.",
+          "success",
+        );
+      } else {
+        Swal.fire("Error", response.message, "error");
+      }
+    } catch (error) {
+      Swal.fire("Error", "Unable to create booking.", "error");
+    }
+  };
   // ============================
   // COMPLETE TRIP
   // ============================
 
-const handleComplete = async (tripId) => {
+  const handleComplete = async (tripId) => {
+    const result = await Swal.fire({
+      title: "Complete Trip?",
+      text: "Mark this trip as completed?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Complete",
+    });
 
-  const result = await Swal.fire({
-    title: "Complete Trip?",
-    text: "Mark this trip as completed?",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Complete"
-  });
+    if (!result.isConfirmed) return;
 
-  if (!result.isConfirmed) return;
+    try {
+      const response = await completeTrip(tripId);
 
-  try {
+      if (response.success) {
+        setTrips((prevTrips) =>
+          prevTrips.map((trip) =>
+            trip.tripId === tripId ? { ...trip, status: "Completed" } : trip,
+          ),
+        );
 
-    const response = await completeTrip(tripId);
-
-    if (response.success) {
-
-      setTrips(prevTrips =>
-        prevTrips.map(trip =>
-          trip.tripId === tripId
-            ? { ...trip, status: "Completed" }
-            : trip
-        )
-      );
-
-      Swal.fire(
-        "Completed",
-        "Trip marked as completed.",
-        "success"
-      );
-
-    } else {
-
-      Swal.fire(
-        "Error",
-        response.message,
-        "error"
-      );
-
+        Swal.fire("Completed", "Trip marked as completed.", "success");
+      } else {
+        Swal.fire("Error", response.message, "error");
+      }
+    } catch (error) {
+      Swal.fire("Error", "Unable to update trip.", "error");
     }
-
-  } catch (error) {
-
-    Swal.fire(
-      "Error",
-      "Unable to update trip.",
-      "error"
-    );
-
-  }
-
-};
-
-
-
-
+  };
 
   // ============================
   // DELETE / CANCEL TRIP
   // ============================
 
-const handleCancel = async (tripId) => {
-
-  const result = await Swal.fire({
-    title: "Cancel Trip?",
-    text: "This will delete the trip permanently.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Delete"
-  });
-
-  if (!result.isConfirmed) return;
-
-  try {
-
-    const response = await deleteTrip(tripId);
-
-    if (response.success) {
-
-      setTrips(prevTrips =>
-        prevTrips.filter(trip => trip.tripId !== tripId)
-      );
-
-      Swal.fire(
-        "Deleted",
-        "Trip deleted successfully.",
-        "success"
-      );
-
-    } else {
-
-      Swal.fire(
-        "Error",
-        response.message,
-        "error"
-      );
-
-    }
-
-  } catch (error) {
-
-    Swal.fire(
-      "Error",
-      "Unable to delete trip.",
-      "error"
-    );
-
-  }
-
-};
-
-
-
-
-
-  return (
-
-    <div className="page">
-
-
-      <h1 className="page-title">
-        My Trips
-      </h1>
-
-
-
-      {
-        loading ?
-
-          <h2>
-            Loading...
-          </h2>
-
-
-          :
-
-          trips.length === 0 ?
-
-            <h2>
-              No trips found.
-            </h2>
-
-
-            :
-
-
-            <div className="trip-grid">
-
-
-              {
-
-                trips.map((trip) => (
-
-
-                  <div
-                    className="trip-card"
-                    key={trip.tripId}
-                  >
-
-
-                    <img
-
-                      src={
-                        trip.destination?.imageUrl
-                          ?
-                          `http://localhost:5055${trip.destination.imageUrl}`
-                          :
-                          "/placeholder.jpg"
-                      }
-
-                      alt={trip.destination?.name}
-
-                      className="trip-image"
-
-                    />
-
-
-
-                    <div className="trip-content">
-
-
-
-                      <div className="trip-header">
-
-
-                        <h3>
-                          {trip.destination?.name}
-                        </h3>
-
-
-
-                        <span
-                          className={`status ${trip.status?.toLowerCase()}`}
-                        >
-
-                          {trip.status}
-
-                        </span>
-
-
-                      </div>
-
-
-
-
-                      <p>
-                        <strong>Date:</strong>{" "}
-                        {
-                          new Date(trip.travelDate)
-                            .toLocaleDateString()
-                        }
-                      </p>
-
-
-
-                   
-
-
-
-                      <p>
-                        <strong>Days:</strong>
-                        {trip.days}
-                      </p>
-
-
-
-                      <p>
-                        <strong>Transport:</strong>
-                        {trip.transportation}
-                      </p>
-
-
-
-                      <p>
-                        <strong>Hotel:</strong>
-                        {trip.hotelCategory}
-                      </p>
-
-
-
-
-                      <div className="trip-buttons">
-
-
-
-                        <button
-
-                          className="view-btn"
-
-                          onClick={() =>
-                            handleView(trip.tripId)
-                          }
-
-                        >
-
-                          View
-
-                        </button>
-
-
-
-
-                        <button
-
-                          className="complete-btn"
-
-                          disabled={
-                            trip.status === "Completed"
-                          }
-
-                          onClick={() =>
-                            handleComplete(trip.tripId)
-                          }
-
-                        >
-
-                          Complete
-
-                        </button>
-
-
-
-
-                        <button
-
-                          className="cancel-btn"
-
-                          onClick={() =>
-                            handleCancel(trip.tripId)
-                          }
-
-                        >
-
-                          Cancel
-
-                        </button>
-
-
-
-                      </div>
-
-
-
-                    </div>
-
-
-
-                  </div>
-
-
-                ))
-
-
-              }
-
-
-            </div>
-
-
+  const handleCancel = async (tripId) => {
+    const result = await Swal.fire({
+      title: "Cancel Trip?",
+      text: "This will delete the trip permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await deleteTrip(tripId);
+
+      if (response.success) {
+        setTrips((prevTrips) =>
+          prevTrips.filter((trip) => trip.tripId !== tripId),
+        );
+
+        Swal.fire("Deleted", "Trip deleted successfully.", "success");
+      } else {
+        Swal.fire("Error", response.message, "error");
       }
-
-
-    </div>
-
-
+    } catch (error) {
+      Swal.fire("Error", "Unable to delete trip.", "error");
+    }
+  };
+  const filteredTrips = trips.filter((trip) =>
+    trip.destination?.name?.toLowerCase().includes(search.toLowerCase()),
   );
+  return (
+    <div className="page">
+      <h1 className="page-title">My Trips</h1>
 
+      <div className="trip-search">
+        <i className="bi bi-search"></i>
+
+        <input
+          type="text"
+          placeholder="Search destination..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : filteredTrips.length === 0 ? (
+        <h2>No trips found.</h2>
+      ) : (
+        <div className="trip-grid">
+        {filteredTrips.map((trip) => (
+            <div className="trip-card" key={trip.tripId}>
+              <img
+                src={
+                  trip.destination?.imageUrl
+                    ? `http://localhost:5055${trip.destination.imageUrl}`
+                    : "/placeholder.jpg"
+                }
+                alt={trip.destination?.name}
+                className="trip-image"
+              />
+
+              <div className="trip-content">
+                <div className="trip-header">
+                  <h3>{trip.destination?.name}</h3>
+
+                  <span className={`status ${trip.status?.toLowerCase()}`}>
+                    {trip.status}
+                  </span>
+                </div>
+
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(trip.travelDate).toLocaleDateString()}
+                </p>
+
+                <p>
+                  <strong>Days:</strong>
+                  {trip.days}
+                </p>
+
+                <p>
+                  <strong>Transport:</strong>
+                  {trip.transportation}
+                </p>
+
+                <p>
+                  <strong>Hotel:</strong>
+                  {trip.hotelCategory}
+                </p>
+                <div className="trip-buttons">
+                  <button
+                    className="view-btn"
+                    onClick={() => handleView(trip.tripId)}
+                  >
+                    <i className="bi bi-eye-fill"></i>
+                    View
+                  </button>
+
+                  <button
+                    className="book-btn"
+                    onClick={() => handleBooking(trip)}
+                  >
+                    <i className="bi bi-calendar-check-fill"></i>
+                    Book
+                  </button>
+
+                  <button
+                    className="complete-btn"
+                    disabled={trip.status === "Completed"}
+                    onClick={() => handleComplete(trip.tripId)}
+                  >
+                    <i className="bi bi-check-circle-fill"></i>
+                    Complete
+                  </button>
+
+                  <button
+                    className="cancel-btn"
+                    onClick={() => handleCancel(trip.tripId)}
+                  >
+                    <i className="bi bi-x-circle-fill"></i>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
-
 
 export default MyTrips;

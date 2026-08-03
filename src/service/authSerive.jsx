@@ -63,6 +63,7 @@ export const loginAdmin = async (email, password) => {
 export const register = async (
     fullName,
     email,
+    phoneNumber,
     password
 ) => {
 
@@ -71,6 +72,7 @@ export const register = async (
         {
             fullName,
             email,
+            phoneNumber,
             password
         }
     );

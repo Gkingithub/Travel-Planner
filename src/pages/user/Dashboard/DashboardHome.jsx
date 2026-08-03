@@ -690,7 +690,7 @@ const startDateRef = useRef(null);
               <p>No destinations found.</p>
             ) : (
               filteredDestinations
-                .slice(0, 5)
+                .slice(0, 3)
                 .map((destination) => (
                   <div
                     className="mini-card"

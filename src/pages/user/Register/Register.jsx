@@ -9,6 +9,7 @@ function Register() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -37,7 +38,7 @@ function Register() {
 
     if (loading) return;
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !phoneNumber || !password || !confirmPassword) {
       Swal.fire({
         icon: "error",
         title: "Missing Fields",
@@ -58,8 +59,7 @@ function Register() {
     setLoading(true);
 
     try {
-      await register(name, email, password);
-
+      await register(name, email, phoneNumber, password);
       Swal.fire({
         icon: "success",
         title: "Account Created",
@@ -99,6 +99,14 @@ function Register() {
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={handleEnter}
           />
+          <input
+            type="tel"
+            maxLength={10}
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            onKeyDown={handleEnter}
+          />
 
           <input
             type="password"
@@ -121,8 +129,7 @@ function Register() {
           </button>
 
           <p className="login-link">
-            Already have an account?{" "}
-            <Link to="/login">Login</Link>
+            Already have an account? <Link to="/login">Login</Link>
           </p>
         </form>
       </div>

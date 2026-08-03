@@ -9,8 +9,9 @@ import MyTrips from "../MyTrips";
 import Destinations from "../Destinations";
 import Hotels from "../Hotels";
 import Profile from "../Profile";
+import Notifications from "../Notification/Notification";
 import Recommendation from "../Recommendation/Recommendation";
-
+import Payment from "../Payment/Payment";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -51,10 +52,10 @@ function Dashboard() {
 
           <Route path="hotels" element={<Hotels />} />
 
-          
+           <Route path="Notifications" element={<Notifications />} />
 
           <Route path="recommendation" element={<Recommendation />} />
-
+<Route path="payment" element={<Payment />} />
           <Route path="profile" element={<Profile user={user} />} />
         </Routes>
       </div>

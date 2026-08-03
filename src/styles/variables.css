@@ -25,4 +25,8 @@
 
     /* Transition */
     --transition: 0.3s ease;
+    --font-size-large:22px;
+    --font-size-small:16px;
+    --font-size-logo:30px;
+    --font-size-nav:16px;
 }

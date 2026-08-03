@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { FaBell } from "react-icons/fa";
+import { getUnreadCount } from "../service/notificationService";
 import { NavLink } from "react-router-dom";
 import {
   FaHome,
@@ -11,6 +13,29 @@ import {
 } from "react-icons/fa";
 
 function Sidebar({ logout }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    loadUnreadCount();
+
+    const refresh = () => loadUnreadCount();
+
+    window.addEventListener("notificationUpdated", refresh);
+
+    return () => {
+      window.removeEventListener("notificationUpdated", refresh);
+    };
+  }, []);
+
+  const loadUnreadCount = async () => {
+    try {
+      const response = await getUnreadCount();
+      setCount(response.count);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="sidebar">
       <div className="logo">
@@ -31,6 +56,17 @@ function Sidebar({ logout }) {
           </NavLink>
         </li>
 
+        <li>
+          <NavLink
+            to="/dashboard/recommendation"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? "active" : ""}`
+            }
+          >
+            <FaRobot className="menu-icon" />
+            <span>Recommendation</span>
+          </NavLink>
+        </li>
         <li>
           <NavLink
             to="/dashboard/trips"
@@ -69,18 +105,6 @@ function Sidebar({ logout }) {
 
         <li>
           <NavLink
-            to="/dashboard/recommendation"
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? "active" : ""}`
-            }
-          >
-            <FaRobot className="menu-icon" />
-            <span>Recommendation</span>
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
             to="/dashboard/profile"
             className={({ isActive }) =>
               `sidebar-link ${isActive ? "active" : ""}`
@@ -90,7 +114,20 @@ function Sidebar({ logout }) {
             <span>Profile</span>
           </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/dashboard/notifications"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? "active" : ""}`
+            }
+          >
+            <FaBell className="menu-icon" />
 
+            <span>Notifications</span>
+
+            {count > 0 && <span className="notification-badge">{count}</span>}
+          </NavLink>
+        </li>
         <li>
           <button className="sidebar-link logout-btn" onClick={logout}>
             <FaSignOutAlt className="menu-icon" />
